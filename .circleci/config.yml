@@ -2,6 +2,9 @@
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
 
+orbs:
+  aws-ecr: circleci/aws-ecr@8.1.2
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
@@ -24,3 +27,28 @@ workflows:
   say-hello-workflow:
     jobs:
       - say-hello
+  build_and_push_image:
+    jobs:
+      - aws-ecr/build-and-push-image:
+          aws-access-key-id: AWS_ACCESS_KEY
+          aws-cli-version: latest
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          context: myContext
+          create-repo: true
+          dockerfile: Dockerfile
+          executor: aws-ecr/default
+          extra-build-args: '--compress'
+          new-profile-name: circle
+          no-output-timeout: 20m
+          platform: linux/amd64
+          profile-name: circle
+          public-registry: false
+          push-image: true
+          region: us-east-1
+          registry-id: AWS_ECR_REGISTRY_ID
+          repo: clique
+          repo-scan-on-push: true
+          role-arn: 'arn:aws:iam::673862467403:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS'
+          skip-when-tags-exist: false
+          source-profile: sourceProfileName
+          tag: 'latest,myECRRepoTag'
