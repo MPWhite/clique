@@ -7,4 +7,4 @@ RUN yarn
 COPY . .
 RUN tsc
 
-CMD [ "node", "index.js" ]
+CMD [ "node", "./build/index.js" ]
