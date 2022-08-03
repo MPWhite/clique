@@ -48,7 +48,7 @@ workflows:
           registry-id: AWS_ECR_REGISTRY_ID
           repo: clique
           repo-scan-on-push: true
-          role-arn: 'arn:aws:iam::673862467403:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS'
+#          role-arn: 'arn:aws:iam::673862467403:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS'
           skip-when-tags-exist: false
           source-profile: circle
           tag: 'latest,myECRRepoTag'
