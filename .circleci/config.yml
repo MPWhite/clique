@@ -50,5 +50,5 @@ workflows:
           repo-scan-on-push: true
           role-arn: 'arn:aws:iam::673862467403:role/aws-service-role/ecs.amazonaws.com/AWSServiceRoleForECS'
           skip-when-tags-exist: false
-          source-profile: sourceProfileName
+          source-profile: default
           tag: 'latest,myECRRepoTag'
