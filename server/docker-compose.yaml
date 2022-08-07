@@ -1,0 +1,15 @@
+version: "3"
+
+volumes:
+  data: { }
+  redis-data: { }
+
+services:
+  postgres:
+    image: postgres:11-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: clique
+    ports:
+      - "5432:5432"

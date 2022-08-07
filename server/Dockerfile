@@ -4,7 +4,7 @@ COPY package.json ./
 
 RUN npm install -g typescript
 RUN yarn
-COPY . .
+COPY .. .
 RUN tsc
 
 CMD [ "node", "./build/index.js" ]
