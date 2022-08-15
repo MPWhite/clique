@@ -1,0 +1,22 @@
+{
+  "$ref": "#/definitions/PostReq",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "PostReq": {
+      "additionalProperties": false,
+      "properties": {
+        "someKey": {
+          "enum": [
+            "val1",
+            "val2"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "someKey"
+      ],
+      "type": "object"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+.PostForm {
+  form {
+    display: flex;
+    flex-direction: column;
+
+    input {
+      margin-bottom: 5px;
+      font-size: 20px;
+    }
+
+    label {
+      font-size: 12px;
+      margin-left:2px;
+    }
+
+    button {
+      height: 35px;
+      width: 100%;
+      margin-top:5px;
+    }
+  }
+}

@@ -1,0 +1,39 @@
+.Post {
+  &__Info {
+  }
+
+  &__Reply {
+    textarea {
+      width: 100%;
+      box-sizing: border-box;
+      height: 75px;
+      font-size: 16px;
+    }
+  }
+}
+
+.Comment {
+  display: flex;
+  flex-direction: column;
+
+  &__Reply {
+    font-size: 12px;
+  }
+
+  &__Metadata {
+    display: flex;
+
+    span {
+      margin-right: 10px;
+      color: #333;
+      font-size: 12px;
+    }
+  }
+
+  &__Children {
+    margin-left: 10px;
+    border-left: 1px solid black;
+    padding-left: 10px;
+    margin-top: 10px;
+  }
+}

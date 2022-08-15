@@ -1,0 +1,50 @@
+
+button {
+    margin-bottom: 10px;
+    margin-right: 10px;
+}
+
+.PostCard {
+    position: relative;
+    display: flex;
+    background-color: #eee;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    img {
+        height: 50px;
+        width: 50px;
+        margin-left: 5px;
+    }
+
+    &__Score {
+        position: relative;
+        min-width: 30px;
+        text-align: center;
+        border-right: 1px solid #ccc;
+        span {
+            position:absolute;
+            top:50%;
+            left: 50%;
+            text-align: center;
+            transform:translate(-50%, -50%);
+        }
+    }
+
+    &__Details {
+        padding: 10px;
+
+        p {
+            font-weight: bold;
+            font-size: 16px;
+            margin: 0;
+        }
+
+        span {
+            margin-right: 10px;
+            font-size: 12px;
+            color: #444;
+        }
+
+    }
+}

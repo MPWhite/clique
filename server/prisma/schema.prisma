@@ -1,0 +1,77 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:1234@localhost:5432/clique?schema=public"
+}
+
+model Server {
+  id               String             @id @default(uuid()) @db.Uuid
+  name             String
+  creator          User               @relation("ServerCreator", fields: [creatorId], references: [id])
+  creatorId        String             @db.Uuid
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  // Prisma specific bullshit
+  ServerMembership ServerMembership[]
+  Post             Post[]
+  Comment          Comment[]
+}
+
+model User {
+  id               String             @id @default(uuid()) @db.Uuid
+  displayName      String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  // Prisma specific bullshit
+  ServersCreated   Server[]           @relation("ServerCreator")
+  ServerMembership ServerMembership[]
+  Post             Post[]
+  Comment          Comment[]
+}
+
+model ServerMembership {
+  id        String   @id @default(uuid()) @db.Uuid
+  server    Server   @relation(fields: [serverId], references: [id])
+  serverId  String   @db.Uuid
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Post {
+  id        String    @id @default(uuid()) @db.Uuid
+  server    Server    @relation(fields: [serverId], references: [id])
+  serverId  String    @db.Uuid
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  String    @db.Uuid
+  link      String
+  title     String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  // Prisma specific bullshit
+  Comments  Comment[]
+}
+
+model Comment {
+  id        String    @id @default(uuid()) @db.Uuid
+  server    Server    @relation(fields: [serverId], references: [id])
+  serverId  String    @db.Uuid
+  author    User      @relation(fields: [authorId], references: [id])
+  authorId  String    @db.Uuid
+  post      Post      @relation(fields: [postId], references: [id])
+  postId    String    @db.Uuid
+  parent    Comment?  @relation("Parent", fields: [parentId], references: [id])
+  parentId  String?   @db.Uuid
+  body      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  // Prisma specific bullshit
+  children  Comment[] @relation("Parent")
+}
