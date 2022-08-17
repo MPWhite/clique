@@ -32,5 +32,5 @@ app.use((err, req, res, next) => {
   res.status(500).send("Something broke!");
 });
 
-console.log(`Listening on port ${process.env.port || 3001}`);
-app.listen(process.env.port || 3001);
+console.log(`Listening on port ${process.env.PORT || 3001}`);
+app.listen(process.env.PORT || 3001);
