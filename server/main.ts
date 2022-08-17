@@ -36,8 +36,8 @@ app.use(bodyParser.json());
 
 app.use("/api", allRoutes);
 app.use("/api/auth", authRoutes);
-app.use("/api/posts", verifyToken, postRoutes);
-app.use("/api/invitation", verifyToken, inviteRoutes);
+app.use("/api/posts", postRoutes);
+app.use("/api/invitation", inviteRoutes);
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
