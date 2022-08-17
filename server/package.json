@@ -22,7 +22,7 @@
   },
   "scripts": {
     "dev": "npx nodemon ./main.ts",
-    "postinstall": "npx prisma generate"
+    "postinstall": "tsc && npx prisma generate"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
