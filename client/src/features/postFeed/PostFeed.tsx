@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
+import { Link } from "react-router-dom";
+import PullToRefresh from "react-simple-pull-to-refresh";
 
 TimeAgo.addDefaultLocale(en);
 
@@ -21,22 +23,50 @@ export function DummyPost({ rank, post }: { rank: Number; post: any }) {
         <p>{post.title}</p>
         <span>{timeAgo.format(Date.parse(post.createdAt))}</span>
         <span>{post.author.displayName}</span>
-        <span>4 comments</span>
+        <span
+          onClick={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+          }}
+        >
+          <Link to={`/post/${post.id}`}>
+            {post._count.Comments} Comment
+            {post._count.Comments === 1 ? "" : "s"}
+          </Link>
+        </span>
       </div>
     </div>
   );
 }
 
-const TOKEN =
-  "eyJhbGciOiJIUzI1NiJ9.N2NlNjFhZTMtMmY3Mi00MDgwLWIxNDUtMWY0MGVhN2FiZGIz.lrk6fs9aH13PEBS_n4rRyKziAH4Sdj7YbRDg-ChTPJ8";
-
 export function PostFeed() {
+  localStorage.setItem(
+    "AUTH",
+    "eyJhbGciOiJIUzI1NiJ9.N2NlNjFhZTMtMmY3Mi00MDgwLWIxNDUtMWY0MGVhN2FiZGIz.lrk6fs9aH13PEBS_n4rRyKziAH4Sdj7YbRDg-ChTPJ8"
+  );
   const [posts, setPosts] = useState([]);
+
+  const fetchPosts = async () => {
+    fetch("/api/posts", {
+      // @ts-ignore
+      headers: {
+        Authorization: localStorage.getItem("AUTH"),
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setPosts(data);
+      })
+      .catch((err) => {
+        console.log(err.message);
+      });
+  };
 
   useEffect(() => {
     fetch("/api/posts", {
+      // @ts-ignore
       headers: {
-        Authorization: TOKEN,
+        Authorization: localStorage.getItem("AUTH"),
       },
     })
       .then((response) => response.json())
@@ -48,16 +78,27 @@ export function PostFeed() {
       });
   }, []);
 
-  console.log(posts);
-
   return (
-    <div className="App">
-      <button>Post Something</button>
-      <button>Edit Account</button>
-      <button>Invite Somebody</button>
-      {posts.map((post, idx) => {
-        return <DummyPost rank={idx + 1} post={post} />;
-      })}
-    </div>
+    <PullToRefresh
+      onRefresh={async () => {
+        await fetchPosts();
+        return Promise.resolve(1);
+      }}
+      canFetchMore={true}
+    >
+      <>
+        <div className="NavButton">
+          <Link to={"/submit-post"}>
+            <button>Post Something</button>
+          </Link>
+          <Link to={"/login"}>
+            <button>Login</button>
+          </Link>
+        </div>
+        {posts.map((post, idx) => {
+          return <DummyPost rank={idx + 1} key={idx} post={post} />;
+        })}
+      </>
+    </PullToRefresh>
   );
 }

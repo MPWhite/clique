@@ -1,90 +1,86 @@
-import "./Post.scss";
-import { DummyPost } from "../postFeed/PostFeed";
+import { useParams, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import { Field, Formik } from "formik";
-import { Link, useParams } from "react-router-dom";
 
 TimeAgo.addDefaultLocale(en);
 
 // Create formatter (English).
 const timeAgo = new TimeAgo("en-US");
 
-export function Comment({ comment }: { comment: any }) {
-  return (
-    <div className="Comment">
-      <div className="Comment__Metadata">
-        <span>{comment.author.displayName}</span>
-        <span>{timeAgo.format(Date.parse(comment.createdAt))}</span>
-      </div>
-      <span>{comment.body}</span>
-      <Link
-        to={`/post/${comment.postId}/comment/${comment.id}`}
-        className="Comment__Reply"
-      >
-        Reply
-      </Link>
-      <div className="Comment__Children">
-        {comment.children &&
-          // @ts-ignore
-          comment.children.map((child) => {
-            return <Comment comment={child} />;
-          })}
-      </div>
-    </div>
-  );
-}
-
 const TOKEN =
   "eyJhbGciOiJIUzI1NiJ9.N2NlNjFhZTMtMmY3Mi00MDgwLWIxNDUtMWY0MGVhN2FiZGIz.lrk6fs9aH13PEBS_n4rRyKziAH4Sdj7YbRDg-ChTPJ8";
 
-export function Post() {
-  const params = useParams();
+export function CommentReply() {
+  const { postId, commentId } = useParams();
+  const [postWithSingleComment, setPostWithSingleComment] = useState(null);
+  const navigate = useNavigate();
 
-  const [postWithComments, setPostWithComments] = useState(null);
-
-  const openLink = () => {
-    // @ts-ignore
-    window.open(postWithComments.link);
-  };
-
-  const fetchComments = () => {
-    fetch(`/api/posts/${params.postId}`, {
+  useEffect(() => {
+    fetch(`/api/posts/${postId}/comment/${commentId}`, {
       headers: {
         Authorization: TOKEN,
       },
     })
       .then((response) => response.json())
       .then((data) => {
-        setPostWithComments(data);
+        setPostWithSingleComment(data);
       })
       .catch((err) => {
-        alert("oh no!");
-        console.log(err.message);
+        alert("Oh No!");
+        console.log(err.mesasge);
       });
-  };
-
-  useEffect(() => {
-    fetchComments();
   }, []);
 
+  if (!postWithSingleComment) {
+    return <h1>Eh?</h1>;
+  }
+
+  const { post, comment } = postWithSingleComment;
+
+  const openLink = () => {
+    // @ts-ignore
+    window.open(post.link);
+  };
+
   return (
-    <div className="Post">
+    <div>
+      <h1>Replying to Single Comment</h1>
+      {/*THIS IS AN EXACT COPY! AHH*/}
       <div className="PostCard" onClick={openLink}>
         <div className="PostCard__Details">
           {/*@ts-ignore*/}
-          <p>{postWithComments?.title}</p>
+          <p>{post?.title}</p>
           <span>
             {/*@ts-ignore*/}
-            {postWithComments?.createdAt &&
+            {post?.createdAt &&
               // @ts-ignore
-              timeAgo.format(Date.parse(postWithComments.createdAt))}
+              timeAgo.format(Date.parse(post.createdAt))}
           </span>
           {/*@ts-ignore*/}
-          <span>{postWithComments?.author?.displayName}</span>
+          <span>{post?.author?.displayName}</span>
         </div>
       </div>
+
+      <br />
+
+      {/*THIS IS AN EXACT COPY! AHH*/}
+      <div className="Comment">
+        <div className="Comment__Metadata">
+          {/* @ts-ignore*/}
+          <span>{comment.author.displayName}</span>
+          {/* @ts-ignore*/}
+          <span>{timeAgo.format(Date.parse(comment.createdAt))}</span>
+        </div>
+        {/* @ts-ignore*/}
+        <span>{comment.body}</span>
+        <a className="Comment__Reply" href="/">
+          Reply
+        </a>
+      </div>
+
+      <br />
 
       <Formik
         initialValues={{ commentBody: "" }}
@@ -95,11 +91,10 @@ export function Post() {
           setSubmitting(true);
           const commentBody = {
             // @ts-ignore
-            serverId: postWithComments?.serverId,
             body: values.commentBody,
-            parentId: undefined,
+            parentCommentId: commentId,
           };
-          await fetch(`/api/posts/${params.postId}/comment`, {
+          await fetch(`/api/posts/${postId}/comment`, {
             method: "POST",
             headers: {
               Authorization: TOKEN,
@@ -110,7 +105,7 @@ export function Post() {
           });
           resetForm();
           setSubmitting(false);
-          fetchComments();
+          navigate(-1);
         }}
       >
         {({
@@ -137,15 +132,6 @@ export function Post() {
           </form>
         )}
       </Formik>
-
-      <div className="Comments">
-        <h3>Comments</h3>
-        {postWithComments &&
-          // @ts-ignore
-          postWithComments.Comments.map((comment) => {
-            return <Comment comment={comment} />;
-          })}
-      </div>
     </div>
   );
 }

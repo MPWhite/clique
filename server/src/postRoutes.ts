@@ -35,7 +35,7 @@ postRoutes.post("/", async (req, res) => {
 postRoutes.post("/:postId/comment", async (req, res) => {
   const prisma = getPrisma();
   const { parentCommentId, body } = req.body;
-  const bodyOrDefault = body || "fjdksl";
+  const bodyOrDefault = body;
 
   const post = await prisma.post.findFirst({
     where: { id: req.params["postId"] },
@@ -75,7 +75,8 @@ postRoutes.get("/", async (req, res) => {
   const prisma = getPrisma();
   const posts = await prisma.post.findMany({
     orderBy: { createdAt: "desc" },
-    include: { author: true },
+    // @ts-ignore
+    include: { author: true, _count: { select: { Comments: true } } },
   });
   res.json(posts);
 });
@@ -130,6 +131,26 @@ postRoutes.get("/:postId", async (req, res) => {
   post.Comments = formattedComments;
 
   res.json(post);
+});
+
+postRoutes.get("/:postId/comment/:commentId", async (req, res) => {
+  const prisma = getPrisma();
+  const post = await prisma.post.findFirst({
+    where: { id: req.params["postId"] },
+  });
+  const comment = await prisma.comment.findFirst({
+    where: { id: req.params["commentId"] },
+    include: {
+      author: true,
+    },
+  });
+  if (!comment || !post || comment.postId !== post.id) {
+    throw Error("AhhH!");
+  }
+  res.json({
+    post,
+    comment,
+  });
 });
 
 export default postRoutes;

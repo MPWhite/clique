@@ -21,5 +21,14 @@
         </introspection-scope>
       </schema-mapping>
     </data-source>
+    <data-source name="d8gjv0rtco7bqj@ec2-3-224-8-189.compute-1.amazonaws.com" uuid="9c6cc52e-a57e-4518-a246-1a60ec433295">
+      <database-info product="PostgreSQL" version="14.4 (Ubuntu 14.4-1.pgdg20.04+1)" jdbc-version="4.2" driver-name="PostgreSQL JDBC Driver" driver-version="42.4.0" dbms="POSTGRES" exact-version="14.4" exact-driver-version="42.4">
+        <identifier-quote-string>&quot;</identifier-quote-string>
+      </database-info>
+      <case-sensitivity plain-identifiers="lower" quoted-identifiers="exact" />
+      <secret-storage>master_key</secret-storage>
+      <user-name>fpvhxsubvamtgo</user-name>
+      <schema-mapping />
+    </data-source>
   </component>
 </project>

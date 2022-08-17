@@ -8,5 +8,12 @@
       <jdbc-url>jdbc:postgresql://localhost:5432/clique</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+    <data-source source="LOCAL" name="d8gjv0rtco7bqj@ec2-3-224-8-189.compute-1.amazonaws.com" uuid="9c6cc52e-a57e-4518-a246-1a60ec433295">
+      <driver-ref>postgresql</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.postgresql.Driver</jdbc-driver>
+      <jdbc-url>jdbc:postgresql://ec2-3-224-8-189.compute-1.amazonaws.com:5432/d8gjv0rtco7bqj</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

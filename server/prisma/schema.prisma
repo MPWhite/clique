@@ -21,18 +21,25 @@ model Server {
   ServerMembership ServerMembership[]
   Post             Post[]
   Comment          Comment[]
+  Invitation       Invitation[]
+  Approval         Approval[]
 }
 
 model User {
-  id               String             @id @default(uuid()) @db.Uuid
-  displayName      String
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @updatedAt
+  id                 String             @id @default(uuid()) @db.Uuid
+  displayName        String             @unique
+  // Don't worry! It's hashed!
+  password           String
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+  Inviation          Invitation?         @relation("Invite", fields: [invitationId], references: [id])
+  invitationId       String?             @unique @db.Uuid
   // Prisma specific bullshit
-  ServersCreated   Server[]           @relation("ServerCreator")
-  ServerMembership ServerMembership[]
-  Post             Post[]
-  Comment          Comment[]
+  ServersCreated     Server[]           @relation("ServerCreator")
+  ServerMembership   ServerMembership[]
+  Post               Post[]
+  Comment            Comment[]
+  CreatedInvitations Invitation[]       @relation("InviteCreator")
 }
 
 model ServerMembership {
@@ -42,7 +49,6 @@ model ServerMembership {
   user      User     @relation(fields: [userId], references: [id])
   userId    String   @db.Uuid
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model Post {
@@ -54,7 +60,6 @@ model Post {
   link      String
   title     String
   createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
   // Prisma specific bullshit
   Comments  Comment[]
 }
@@ -71,7 +76,41 @@ model Comment {
   parentId  String?   @db.Uuid
   body      String
   createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
   // Prisma specific bullshit
   children  Comment[] @relation("Parent")
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+}
+
+// How the fuck do i link this to a user that has not been made yet?
+model Invitation {
+  id                    String           @id @default(uuid()) @db.Uuid
+  server                Server           @relation(fields: [serverId], references: [id])
+  serverId              String           @db.Uuid
+  creator               User             @relation("InviteCreator", fields: [creatorId], references: [id])
+  creatorId             String           @db.Uuid
+  inviteUserDisplayName String           @unique
+  socialProofLink       String
+  code                  String
+  status                InvitationStatus
+  Receiver              User?            @relation("Invite")
+  // Prisma shit
+  Approvals             Approval[]
+  createdAt             DateTime         @default(now())
+}
+
+model Approval {
+  id           String     @id @default(uuid()) @db.Uuid
+  invitation   Invitation @relation(fields: [invitationId], references: [id])
+  invitationId String     @db.Uuid
+  server       Server     @relation(fields: [serverId], references: [id])
+  serverId     String     @db.Uuid
+  Approver     User       @relation(fields: [approverId], references: [approverId])
+  approverId  USer
+
+  createdAt    DateTime   @default(now())
 }

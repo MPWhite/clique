@@ -5,9 +5,25 @@ import "./App.scss";
 import { PostForm } from "./features/postForm/PostForm";
 import { PostFeed } from "./features/postFeed/PostFeed";
 import { Post } from "./features/postView/Post";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { CommentReply } from "./features/postView/CommentReply";
+import { Login } from "./features/auth/Login";
 
 function App() {
-  return <Post />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path={"/"} element={<PostFeed />} />
+        <Route path={"/login"} element={<Login />} />
+        <Route path={"/post/:postId"} element={<Post />} />
+        <Route
+          path={"/post/:postId/comment/:commentId"}
+          element={<CommentReply />}
+        />
+        <Route path={"/submit-post"} element={<PostForm />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

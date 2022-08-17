@@ -1,0 +1,16 @@
+.LoginForm {
+  display: flex;
+  flex-direction: column;
+
+  input {
+    margin-bottom: 10px;
+    font-size: 20px;
+  }
+
+  button {
+    width: 100%;
+    height: 35px;
+    box-sizing: border-box;
+    font-size: 14px;
+  }
+}

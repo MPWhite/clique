@@ -4,7 +4,7 @@
     <root id="1">
       <DateStyle>mdy</DateStyle>
       <ServerVersion>11.16</ServerVersion>
-      <StartupTime>1660285225</StartupTime>
+      <StartupTime>1660507734</StartupTime>
       <TimeZones>true ACDT
 true ACSST
 false ACST
@@ -811,7 +811,7 @@ true posixrules
 12868||10|C|G
 12868||-9223372036854775808|U|G
 12868||10|U|G</Grants>
-      <IntrospectionStateNumber>666</IntrospectionStateNumber>
+      <IntrospectionStateNumber>965</IntrospectionStateNumber>
       <ObjectId>16384</ObjectId>
       <OwnerName>postgres</OwnerName>
     </database>
@@ -7462,77 +7462,170 @@ true posixrules
     </schema>
     <schema id="494" parent="3" name="public">
       <Current>1</Current>
-      <IntrospectionStateNumber>666</IntrospectionStateNumber>
+      <IntrospectionStateNumber>965</IntrospectionStateNumber>
       <ObjectId>24759</ObjectId>
       <StateNumber>636</StateNumber>
       <OwnerName>postgres</OwnerName>
     </schema>
-    <table id="495" parent="494" name="Comment">
-      <ObjectId>24803</ObjectId>
-      <StateNumber>639</StateNumber>
+    <object-type id="495" parent="494" name="InvitationStatus">
+      <Labels>PENDING
+ACCEPTED
+REJECTED</Labels>
+      <ObjectId>27905</ObjectId>
+      <StateNumber>962</StateNumber>
+      <SubCategory>enum</SubCategory>
+      <SubKind>enum</SubKind>
+      <OwnerName>postgres</OwnerName>
+    </object-type>
+    <table id="496" parent="494" name="Approval">
+      <ObjectId>27920</ObjectId>
+      <StateNumber>962</StateNumber>
       <OwnerName>postgres</OwnerName>
     </table>
-    <table id="496" parent="494" name="Post">
+    <table id="497" parent="494" name="Comment">
+      <ObjectId>24803</ObjectId>
+      <StateNumber>690</StateNumber>
+      <OwnerName>postgres</OwnerName>
+    </table>
+    <table id="498" parent="494" name="Invitation">
+      <ObjectId>27911</ObjectId>
+      <StateNumber>962</StateNumber>
+      <OwnerName>postgres</OwnerName>
+    </table>
+    <table id="499" parent="494" name="Post">
       <ObjectId>24794</ObjectId>
       <StateNumber>639</StateNumber>
       <OwnerName>postgres</OwnerName>
     </table>
-    <table id="497" parent="494" name="Server">
+    <table id="500" parent="494" name="Server">
       <ObjectId>24770</ObjectId>
       <StateNumber>639</StateNumber>
       <OwnerName>postgres</OwnerName>
     </table>
-    <table id="498" parent="494" name="ServerMembership">
+    <table id="501" parent="494" name="ServerMembership">
       <ObjectId>24788</ObjectId>
       <StateNumber>639</StateNumber>
       <OwnerName>postgres</OwnerName>
     </table>
-    <table id="499" parent="494" name="User">
+    <table id="502" parent="494" name="User">
       <ObjectId>24779</ObjectId>
-      <StateNumber>639</StateNumber>
+      <StateNumber>962</StateNumber>
       <OwnerName>postgres</OwnerName>
     </table>
-    <table id="500" parent="494" name="_prisma_migrations">
+    <table id="503" parent="494" name="_prisma_migrations">
       <ObjectId>24760</ObjectId>
       <StateNumber>637</StateNumber>
       <OwnerName>postgres</OwnerName>
     </table>
-    <column id="501" parent="495" name="id">
+    <column id="504" parent="496" name="id">
+      <DataType>uuid|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>2950</TypeId>
+    </column>
+    <column id="505" parent="496" name="invitationId">
+      <DataType>uuid|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>2950</TypeId>
+    </column>
+    <column id="506" parent="496" name="serverId">
+      <DataType>uuid|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>2950</TypeId>
+    </column>
+    <column id="507" parent="496" name="createdAt">
+      <DataType>timestamp(3)|0s</DataType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>1114</TypeId>
+    </column>
+    <foreign-key id="508" parent="496" name="Approval_invitationId_fkey">
+      <ColNames>invitationId</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>27943</ObjectId>
+      <OnDelete>restrict</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefColPositions>1</RefColPositions>
+      <RefKeyName>Invitation_pkey</RefKeyName>
+      <StateNumber>962</StateNumber>
+      <RefTableId>27911</RefTableId>
+      <RefTableName>Invitation</RefTableName>
+      <RefTableKind>table</RefTableKind>
+    </foreign-key>
+    <foreign-key id="509" parent="496" name="Approval_serverId_fkey">
+      <ColNames>serverId</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>27948</ObjectId>
+      <OnDelete>restrict</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefColPositions>1</RefColPositions>
+      <RefKeyName>Server_pkey</RefKeyName>
+      <StateNumber>962</StateNumber>
+      <RefTableId>24770</RefTableId>
+      <RefTableName>Server</RefTableName>
+      <RefTableKind>table</RefTableKind>
+    </foreign-key>
+    <index id="510" parent="496" name="Approval_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>27924</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>962</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="511" parent="496" name="Approval_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>27925</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>962</StateNumber>
+      <UnderlyingIndexId>27924</UnderlyingIndexId>
+    </key>
+    <column id="512" parent="497" name="id">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="502" parent="495" name="serverId">
+    <column id="513" parent="497" name="serverId">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="503" parent="495" name="authorId">
+    <column id="514" parent="497" name="authorId">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="504" parent="495" name="postId">
+    <column id="515" parent="497" name="postId">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="505" parent="495" name="parentId">
+    <column id="516" parent="497" name="parentId">
       <DataType>uuid|0s</DataType>
-      <NotNull>1</NotNull>
       <Position>5</Position>
-      <StateNumber>639</StateNumber>
+      <StateNumber>690</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="506" parent="495" name="createdAt">
+    <column id="517" parent="497" name="createdAt">
       <DataType>timestamp(3)|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
@@ -7540,14 +7633,14 @@ true posixrules
       <StateNumber>639</StateNumber>
       <TypeId>1114</TypeId>
     </column>
-    <column id="507" parent="495" name="updatedAt">
-      <DataType>timestamp(3)|0s</DataType>
+    <column id="518" parent="497" name="body">
+      <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
-      <Position>7</Position>
-      <StateNumber>639</StateNumber>
-      <TypeId>1114</TypeId>
+      <Position>8</Position>
+      <StateNumber>690</StateNumber>
+      <TypeId>25</TypeId>
     </column>
-    <foreign-key id="508" parent="495" name="Comment_serverId_fkey">
+    <foreign-key id="519" parent="497" name="Comment_serverId_fkey">
       <ColNames>serverId</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24840</ObjectId>
@@ -7561,7 +7654,7 @@ true posixrules
       <RefTableName>Server</RefTableName>
       <RefTableKind>table</RefTableKind>
     </foreign-key>
-    <foreign-key id="509" parent="495" name="Comment_authorId_fkey">
+    <foreign-key id="520" parent="497" name="Comment_authorId_fkey">
       <ColNames>authorId</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24845</ObjectId>
@@ -7575,7 +7668,7 @@ true posixrules
       <RefTableName>User</RefTableName>
       <RefTableKind>table</RefTableKind>
     </foreign-key>
-    <foreign-key id="510" parent="495" name="Comment_postId_fkey">
+    <foreign-key id="521" parent="497" name="Comment_postId_fkey">
       <ColNames>postId</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24850</ObjectId>
@@ -7589,21 +7682,21 @@ true posixrules
       <RefTableName>Post</RefTableName>
       <RefTableKind>table</RefTableKind>
     </foreign-key>
-    <foreign-key id="511" parent="495" name="Comment_parentId_fkey">
+    <foreign-key id="522" parent="497" name="Comment_parentId_fkey">
       <ColNames>parentId</ColNames>
       <NameSurrogate>1</NameSurrogate>
-      <ObjectId>24855</ObjectId>
-      <OnDelete>restrict</OnDelete>
+      <ObjectId>25409</ObjectId>
+      <OnDelete>set-null</OnDelete>
       <OnUpdate>cascade</OnUpdate>
       <RefColNames>id</RefColNames>
       <RefColPositions>1</RefColPositions>
       <RefKeyName>Comment_pkey</RefKeyName>
-      <StateNumber>639</StateNumber>
+      <StateNumber>690</StateNumber>
       <RefTableId>24803</RefTableId>
       <RefTableName>Comment</RefTableName>
       <RefTableKind>table</RefTableKind>
     </foreign-key>
-    <index id="512" parent="495" name="Comment_pkey">
+    <index id="523" parent="497" name="Comment_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24807</ObjectId>
@@ -7612,15 +7705,7 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <index id="513" parent="495" name="Comment_parentId_key">
-      <ColNames>parentId</ColNames>
-      <NameSurrogate>1</NameSurrogate>
-      <ObjectId>24809</ObjectId>
-      <StateNumber>639</StateNumber>
-      <Unique>1</Unique>
-      <AccessMethodId>403</AccessMethodId>
-    </index>
-    <key id="514" parent="495" name="Comment_pkey">
+    <key id="524" parent="497" name="Comment_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24808</ObjectId>
@@ -7628,42 +7713,155 @@ true posixrules
       <StateNumber>639</StateNumber>
       <UnderlyingIndexId>24807</UnderlyingIndexId>
     </key>
-    <column id="515" parent="496" name="id">
+    <column id="525" parent="498" name="id">
+      <DataType>uuid|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>1</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>2950</TypeId>
+    </column>
+    <column id="526" parent="498" name="serverId">
+      <DataType>uuid|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>2</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>2950</TypeId>
+    </column>
+    <column id="527" parent="498" name="creatorId">
+      <DataType>uuid|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>3</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>2950</TypeId>
+    </column>
+    <column id="528" parent="498" name="inviteUserDisplayName">
+      <DataType>text|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>4</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="529" parent="498" name="socialProofLink">
+      <DataType>text|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>5</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="530" parent="498" name="code">
+      <DataType>text|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="531" parent="498" name="status">
+      <DataType>&quot;InvitationStatus&quot;|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>7</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>27905</TypeId>
+    </column>
+    <column id="532" parent="498" name="createdAt">
+      <DataType>timestamp(3)|0s</DataType>
+      <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
+      <NotNull>1</NotNull>
+      <Position>8</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>1114</TypeId>
+    </column>
+    <foreign-key id="533" parent="498" name="Invitation_serverId_fkey">
+      <ColNames>serverId</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>27933</ObjectId>
+      <OnDelete>restrict</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefColPositions>1</RefColPositions>
+      <RefKeyName>Server_pkey</RefKeyName>
+      <StateNumber>962</StateNumber>
+      <RefTableId>24770</RefTableId>
+      <RefTableName>Server</RefTableName>
+      <RefTableKind>table</RefTableKind>
+    </foreign-key>
+    <foreign-key id="534" parent="498" name="Invitation_creatorId_fkey">
+      <ColNames>creatorId</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>27938</ObjectId>
+      <OnDelete>restrict</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefColPositions>1</RefColPositions>
+      <RefKeyName>User_pkey</RefKeyName>
+      <StateNumber>962</StateNumber>
+      <RefTableId>24779</RefTableId>
+      <RefTableName>User</RefTableName>
+      <RefTableKind>table</RefTableKind>
+    </foreign-key>
+    <index id="535" parent="498" name="Invitation_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>27918</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>962</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <index id="536" parent="498" name="Invitation_inviteUserDisplayName_key">
+      <ColNames>inviteUserDisplayName</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>27926</ObjectId>
+      <StateNumber>962</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <key id="537" parent="498" name="Invitation_pkey">
+      <ColNames>id</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>27919</ObjectId>
+      <Primary>1</Primary>
+      <StateNumber>962</StateNumber>
+      <UnderlyingIndexId>27918</UnderlyingIndexId>
+    </key>
+    <column id="538" parent="499" name="id">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="516" parent="496" name="serverId">
+    <column id="539" parent="499" name="serverId">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="517" parent="496" name="authorId">
+    <column id="540" parent="499" name="authorId">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="518" parent="496" name="link">
+    <column id="541" parent="499" name="link">
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>639</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="519" parent="496" name="title">
+    <column id="542" parent="499" name="title">
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StateNumber>639</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="520" parent="496" name="createdAt">
+    <column id="543" parent="499" name="createdAt">
       <DataType>timestamp(3)|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
@@ -7671,14 +7869,7 @@ true posixrules
       <StateNumber>639</StateNumber>
       <TypeId>1114</TypeId>
     </column>
-    <column id="521" parent="496" name="updatedAt">
-      <DataType>timestamp(3)|0s</DataType>
-      <NotNull>1</NotNull>
-      <Position>8</Position>
-      <StateNumber>639</StateNumber>
-      <TypeId>1114</TypeId>
-    </column>
-    <foreign-key id="522" parent="496" name="Post_serverId_fkey">
+    <foreign-key id="544" parent="499" name="Post_serverId_fkey">
       <ColNames>serverId</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24830</ObjectId>
@@ -7692,7 +7883,7 @@ true posixrules
       <RefTableName>Server</RefTableName>
       <RefTableKind>table</RefTableKind>
     </foreign-key>
-    <foreign-key id="523" parent="496" name="Post_authorId_fkey">
+    <foreign-key id="545" parent="499" name="Post_authorId_fkey">
       <ColNames>authorId</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24835</ObjectId>
@@ -7706,7 +7897,7 @@ true posixrules
       <RefTableName>User</RefTableName>
       <RefTableKind>table</RefTableKind>
     </foreign-key>
-    <index id="524" parent="496" name="Post_pkey">
+    <index id="546" parent="499" name="Post_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24801</ObjectId>
@@ -7715,7 +7906,7 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="525" parent="496" name="Post_pkey">
+    <key id="547" parent="499" name="Post_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24802</ObjectId>
@@ -7723,28 +7914,28 @@ true posixrules
       <StateNumber>639</StateNumber>
       <UnderlyingIndexId>24801</UnderlyingIndexId>
     </key>
-    <column id="526" parent="497" name="id">
+    <column id="548" parent="500" name="id">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="527" parent="497" name="name">
+    <column id="549" parent="500" name="name">
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>639</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="528" parent="497" name="creatorId">
+    <column id="550" parent="500" name="creatorId">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="529" parent="497" name="createdAt">
+    <column id="551" parent="500" name="createdAt">
       <DataType>timestamp(3)|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
@@ -7752,14 +7943,14 @@ true posixrules
       <StateNumber>639</StateNumber>
       <TypeId>1114</TypeId>
     </column>
-    <column id="530" parent="497" name="updatedAt">
+    <column id="552" parent="500" name="updatedAt">
       <DataType>timestamp(3)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StateNumber>639</StateNumber>
       <TypeId>1114</TypeId>
     </column>
-    <foreign-key id="531" parent="497" name="Server_creatorId_fkey">
+    <foreign-key id="553" parent="500" name="Server_creatorId_fkey">
       <ColNames>creatorId</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24810</ObjectId>
@@ -7773,7 +7964,7 @@ true posixrules
       <RefTableName>User</RefTableName>
       <RefTableKind>table</RefTableKind>
     </foreign-key>
-    <index id="532" parent="497" name="Server_pkey">
+    <index id="554" parent="500" name="Server_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24777</ObjectId>
@@ -7782,7 +7973,7 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="533" parent="497" name="Server_pkey">
+    <key id="555" parent="500" name="Server_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24778</ObjectId>
@@ -7790,28 +7981,28 @@ true posixrules
       <StateNumber>639</StateNumber>
       <UnderlyingIndexId>24777</UnderlyingIndexId>
     </key>
-    <column id="534" parent="498" name="id">
+    <column id="556" parent="501" name="id">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="535" parent="498" name="serverId">
+    <column id="557" parent="501" name="serverId">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="536" parent="498" name="userId">
+    <column id="558" parent="501" name="userId">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="537" parent="498" name="createdAt">
+    <column id="559" parent="501" name="createdAt">
       <DataType>timestamp(3)|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
@@ -7819,14 +8010,7 @@ true posixrules
       <StateNumber>639</StateNumber>
       <TypeId>1114</TypeId>
     </column>
-    <column id="538" parent="498" name="updatedAt">
-      <DataType>timestamp(3)|0s</DataType>
-      <NotNull>1</NotNull>
-      <Position>5</Position>
-      <StateNumber>639</StateNumber>
-      <TypeId>1114</TypeId>
-    </column>
-    <foreign-key id="539" parent="498" name="ServerMembership_serverId_fkey">
+    <foreign-key id="560" parent="501" name="ServerMembership_serverId_fkey">
       <ColNames>serverId</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24820</ObjectId>
@@ -7840,7 +8024,7 @@ true posixrules
       <RefTableName>Server</RefTableName>
       <RefTableKind>table</RefTableKind>
     </foreign-key>
-    <foreign-key id="540" parent="498" name="ServerMembership_userId_fkey">
+    <foreign-key id="561" parent="501" name="ServerMembership_userId_fkey">
       <ColNames>userId</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24825</ObjectId>
@@ -7854,7 +8038,7 @@ true posixrules
       <RefTableName>User</RefTableName>
       <RefTableKind>table</RefTableKind>
     </foreign-key>
-    <index id="541" parent="498" name="ServerMembership_pkey">
+    <index id="562" parent="501" name="ServerMembership_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24792</ObjectId>
@@ -7863,7 +8047,7 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="542" parent="498" name="ServerMembership_pkey">
+    <key id="563" parent="501" name="ServerMembership_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24793</ObjectId>
@@ -7871,21 +8055,21 @@ true posixrules
       <StateNumber>639</StateNumber>
       <UnderlyingIndexId>24792</UnderlyingIndexId>
     </key>
-    <column id="543" parent="499" name="id">
+    <column id="564" parent="502" name="id">
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>639</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="544" parent="499" name="displayName">
+    <column id="565" parent="502" name="displayName">
       <DataType>text|0s</DataType>
       <NotNull>1</NotNull>
       <Position>3</Position>
       <StateNumber>639</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="545" parent="499" name="createdAt">
+    <column id="566" parent="502" name="createdAt">
       <DataType>timestamp(3)|0s</DataType>
       <DefaultExpression>CURRENT_TIMESTAMP</DefaultExpression>
       <NotNull>1</NotNull>
@@ -7893,14 +8077,41 @@ true posixrules
       <StateNumber>639</StateNumber>
       <TypeId>1114</TypeId>
     </column>
-    <column id="546" parent="499" name="updatedAt">
+    <column id="567" parent="502" name="updatedAt">
       <DataType>timestamp(3)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>5</Position>
       <StateNumber>639</StateNumber>
       <TypeId>1114</TypeId>
     </column>
-    <index id="547" parent="499" name="User_pkey">
+    <column id="568" parent="502" name="password">
+      <DataType>text|0s</DataType>
+      <NotNull>1</NotNull>
+      <Position>6</Position>
+      <StateNumber>862</StateNumber>
+      <TypeId>25</TypeId>
+    </column>
+    <column id="569" parent="502" name="invitationId">
+      <DataType>uuid|0s</DataType>
+      <Position>7</Position>
+      <StateNumber>962</StateNumber>
+      <TypeId>2950</TypeId>
+    </column>
+    <foreign-key id="570" parent="502" name="User_invitationId_fkey">
+      <ColNames>invitationId</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>27928</ObjectId>
+      <OnDelete>set-null</OnDelete>
+      <OnUpdate>cascade</OnUpdate>
+      <RefColNames>id</RefColNames>
+      <RefColPositions>1</RefColPositions>
+      <RefKeyName>Invitation_pkey</RefKeyName>
+      <StateNumber>962</StateNumber>
+      <RefTableId>27911</RefTableId>
+      <RefTableName>Invitation</RefTableName>
+      <RefTableKind>table</RefTableKind>
+    </foreign-key>
+    <index id="571" parent="502" name="User_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24786</ObjectId>
@@ -7909,7 +8120,26 @@ true posixrules
       <Unique>1</Unique>
       <AccessMethodId>403</AccessMethodId>
     </index>
-    <key id="548" parent="499" name="User_pkey">
+    <index id="572" parent="502" name="User_displayName_key">
+      <ColNames>displayName</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>26503</ObjectId>
+      <StateNumber>829</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+      <CollationNames>default</CollationNames>
+      <CollationIds>100</CollationIds>
+      <CollationParentNames>pg_catalog</CollationParentNames>
+    </index>
+    <index id="573" parent="502" name="User_invitationId_key">
+      <ColNames>invitationId</ColNames>
+      <NameSurrogate>1</NameSurrogate>
+      <ObjectId>27927</ObjectId>
+      <StateNumber>962</StateNumber>
+      <Unique>1</Unique>
+      <AccessMethodId>403</AccessMethodId>
+    </index>
+    <key id="574" parent="502" name="User_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24787</ObjectId>
@@ -7917,46 +8147,46 @@ true posixrules
       <StateNumber>639</StateNumber>
       <UnderlyingIndexId>24786</UnderlyingIndexId>
     </key>
-    <column id="549" parent="500" name="id">
+    <column id="575" parent="503" name="id">
       <DataType>varchar(36)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>1</Position>
       <StateNumber>637</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="550" parent="500" name="checksum">
+    <column id="576" parent="503" name="checksum">
       <DataType>varchar(64)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>2</Position>
       <StateNumber>637</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="551" parent="500" name="finished_at">
+    <column id="577" parent="503" name="finished_at">
       <DataType>timestamp with time zone|0s</DataType>
       <Position>3</Position>
       <StateNumber>637</StateNumber>
       <TypeId>1184</TypeId>
     </column>
-    <column id="552" parent="500" name="migration_name">
+    <column id="578" parent="503" name="migration_name">
       <DataType>varchar(255)|0s</DataType>
       <NotNull>1</NotNull>
       <Position>4</Position>
       <StateNumber>637</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="553" parent="500" name="logs">
+    <column id="579" parent="503" name="logs">
       <DataType>text|0s</DataType>
       <Position>5</Position>
       <StateNumber>637</StateNumber>
       <TypeId>25</TypeId>
     </column>
-    <column id="554" parent="500" name="rolled_back_at">
+    <column id="580" parent="503" name="rolled_back_at">
       <DataType>timestamp with time zone|0s</DataType>
       <Position>6</Position>
       <StateNumber>637</StateNumber>
       <TypeId>1184</TypeId>
     </column>
-    <column id="555" parent="500" name="started_at">
+    <column id="581" parent="503" name="started_at">
       <DataType>timestamp with time zone|0s</DataType>
       <DefaultExpression>now()</DefaultExpression>
       <NotNull>1</NotNull>
@@ -7964,7 +8194,7 @@ true posixrules
       <StateNumber>637</StateNumber>
       <TypeId>1184</TypeId>
     </column>
-    <column id="556" parent="500" name="applied_steps_count">
+    <column id="582" parent="503" name="applied_steps_count">
       <DataType>integer|0s</DataType>
       <DefaultExpression>0</DefaultExpression>
       <NotNull>1</NotNull>
@@ -7972,7 +8202,7 @@ true posixrules
       <StateNumber>637</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <index id="557" parent="500" name="_prisma_migrations_pkey">
+    <index id="583" parent="503" name="_prisma_migrations_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24768</ObjectId>
@@ -7984,7 +8214,7 @@ true posixrules
       <CollationIds>100</CollationIds>
       <CollationParentNames>pg_catalog</CollationParentNames>
     </index>
-    <key id="558" parent="500" name="_prisma_migrations_pkey">
+    <key id="584" parent="503" name="_prisma_migrations_pkey">
       <ColNames>id</ColNames>
       <NameSurrogate>1</NameSurrogate>
       <ObjectId>24769</ObjectId>
