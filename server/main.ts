@@ -8,23 +8,24 @@ import postRoutes from "./src/postRoutes";
 import { verifyToken } from "./src/middleware/auth";
 import authRoutes from "./src/authRoutes";
 import inviteRoutes from "./src/inviteRoutes";
+import bunyanMiddleware from "bunyan-middleware";
 
 const prisma = new PrismaClient();
 const app = express();
 
-// const requestLogger = createLogger({
-//   name: "clique-http",
-// });
-//
-// app.use(
-//   bunyanMiddleware({
-//     headerName: "X-Request-Id",
-//     propertyName: "reqId",
-//     logName: "req_id",
-//     obscureHeaders: [],
-//     logger: logger,
-//   })
-// );
+const requestLogger = createLogger({
+  name: "clique-http",
+});
+
+app.use(
+  bunyanMiddleware({
+    headerName: "X-Request-Id",
+    propertyName: "reqId",
+    logName: "req_id",
+    obscureHeaders: [],
+    logger: logger,
+  })
+);
 
 app.use(bodyParser.json());
 
@@ -38,9 +39,9 @@ app.use("/api/auth", authRoutes);
 app.use("/api/posts", verifyToken, postRoutes);
 app.use("/api/invitation", verifyToken, inviteRoutes);
 
-// app.get("/users", async (req, res) => {
-//   const users = await prisma.user.findManm();
-//   res.json(users);
-// });
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
 
 app.listen(3001);
