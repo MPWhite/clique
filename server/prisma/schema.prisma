@@ -3,12 +3,12 @@
 
 generator client {
   provider = "prisma-client-js"
-  url      = env("DATABASE_URL")
+  url      = "postgres://fpvhxsubvamtgo:0591d06251351cb69d7ea32321a87019cb1f1155152422b867570ad744e0b18d@ec2-3-224-8-189.compute-1.amazonaws.com:5432/d8gjv0rtco7bqj"
 }
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgres://fpvhxsubvamtgo:0591d06251351cb69d7ea32321a87019cb1f1155152422b867570ad744e0b18d@ec2-3-224-8-189.compute-1.amazonaws.com:5432/d8gjv0rtco7bqj"
 }
 
 model Server {
