@@ -1,22 +1,15 @@
 import express from "express";
-import { PrismaClient } from "@prisma/client";
 import { logger } from "./src/util/logging";
-import { createLogger } from "bunyan";
 import { allRoutes } from "./src/allRoutes";
 import bodyParser from "body-parser";
 import postRoutes from "./src/postRoutes";
-import { verifyToken } from "./src/middleware/auth";
 import authRoutes from "./src/authRoutes";
 import inviteRoutes from "./src/inviteRoutes";
 import bunyanMiddleware from "bunyan-middleware";
 
-const prisma = new PrismaClient();
 const app = express();
 
-const requestLogger = createLogger({
-  name: "clique-http",
-});
-
+console.log("Setting up request logging");
 app.use(
   bunyanMiddleware({
     headerName: "X-Request-Id",
@@ -29,11 +22,6 @@ app.use(
 
 app.use(bodyParser.json());
 
-// app.use((err, req, res, next) => {
-//   console.log(err);
-//   next(err);
-// });
-
 app.use("/api", allRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", postRoutes);
@@ -44,4 +32,5 @@ app.use((err, req, res, next) => {
   res.status(500).send("Something broke!");
 });
 
+console.log("Listening on port 3001");
 app.listen(3001);
