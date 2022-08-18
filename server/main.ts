@@ -7,6 +7,7 @@ import authRoutes from "./src/authRoutes";
 import inviteRoutes from "./src/inviteRoutes";
 import bunyanMiddleware from "bunyan-middleware";
 import { verifyToken } from "./src/middleware/auth";
+import connectDatadog from "connect-datadog";
 
 const app = express();
 
@@ -21,7 +22,13 @@ app.use(
   })
 );
 
+const ddOptions = {
+  response_code: true,
+  tags: ["app:clique-be"],
+};
+
 app.use(bodyParser.json());
+app.use(connectDatadog(ddOptions));
 
 app.use("/api", allRoutes);
 app.use("/api/auth", authRoutes);
