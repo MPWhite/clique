@@ -8,6 +8,9 @@ import inviteRoutes from "./src/inviteRoutes";
 import bunyanMiddleware from "bunyan-middleware";
 import { verifyToken } from "./src/middleware/auth";
 import connectDatadog from "connect-datadog";
+import tracer from "dd-trace";
+
+tracer.init();
 
 const app = express();
 
