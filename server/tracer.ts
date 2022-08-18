@@ -13,7 +13,9 @@ const httpOptions = {
 const httpServerOptions = {
   ...httpOptions,
   hooks: {
-    request: (span, req, res) => {},
+    request: (span, req, res) => {
+      span.setTag("http.route", req.originalUrl);
+    },
   },
 };
 
