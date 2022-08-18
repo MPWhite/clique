@@ -1,3 +1,4 @@
+import "./tracer";
 import express from "express";
 import { logger } from "./src/util/logging";
 import { allRoutes } from "./src/allRoutes";
@@ -8,7 +9,6 @@ import inviteRoutes from "./src/inviteRoutes";
 import bunyanMiddleware from "bunyan-middleware";
 import { verifyToken } from "./src/middleware/auth";
 import connectDatadog from "connect-datadog";
-import "./tracer";
 
 const app = express();
 
