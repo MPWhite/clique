@@ -2,7 +2,7 @@ import tracer from "dd-trace";
 tracer.init(); // initialized in a different file to avoid hoisting.
 
 const httpOptions = {
-  service: "clique-be",
+  service: "clique",
   validateStatus: (code) => code < 400,
   headers: ["host"],
   middleware: true,
