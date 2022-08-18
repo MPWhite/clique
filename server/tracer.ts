@@ -17,7 +17,6 @@ const httpServerOptions = {
   },
 };
 
-tracer.use("express");
 tracer.use("express", httpServerOptions);
 tracer.use("http");
 tracer.use("http2");
