@@ -1,5 +1,6 @@
 import express from "express";
 import { getPrisma } from "./db";
+import tracer from "../tracer";
 
 const postRoutes = express.Router();
 
@@ -83,52 +84,57 @@ postRoutes.get("/", async (req, res) => {
 
 postRoutes.get("/:postId", async (req, res) => {
   const prisma = getPrisma();
-  const post = await prisma.post.findFirst({
-    where: { id: req.params["postId"] },
-    include: {
-      author: true,
-      // @ts-ignore
-      Comments: {
-        include: {
-          author: true,
+  let post: any;
+  await tracer.trace("fetchPosts.db", async (span) => {
+    post = await prisma.post.findFirst({
+      where: { id: req.params["postId"] },
+      include: {
+        author: true,
+        // @ts-ignore
+        Comments: {
+          include: {
+            author: true,
+          },
         },
       },
-    },
-    orderBy: { createdAt: "desc" },
+      orderBy: { createdAt: "desc" },
+    });
   });
 
-  const commentsById = {};
-  // @ts-ignore
-  post.Comments.forEach((comment) => {
+  tracer.trace("fetchPosts.assembleComments", (span) => {
+    const commentsById = {};
     // @ts-ignore
-    comment.children = [];
-    commentsById[comment.id] = comment;
-  });
-
-  // @ts-ignore
-  post.Comments.forEach((comment) => {
-    if (comment.parentId) {
-      console.log(commentsById[comment.parentId]);
-      commentsById[comment.parentId].children.push(comment);
-    }
-  });
-
-  const formattedComments = [];
-  // @ts-ignore
-  post.Comments.forEach((comment) => {
-    if (!comment.parentId) {
+    post.Comments.forEach((comment) => {
       // @ts-ignore
-      formattedComments.push(commentsById[comment.id]);
-    }
-  });
+      comment.children = [];
+      commentsById[comment.id] = comment;
+    });
 
-  // @ts-ignore
-  formattedComments.sort((a: any, b: any) => {
-    return Date.parse(b?.createdAt) - Date.parse(a?.createdAt);
-  });
+    // @ts-ignore
+    post.Comments.forEach((comment) => {
+      if (comment.parentId) {
+        console.log(commentsById[comment.parentId]);
+        commentsById[comment.parentId].children.push(comment);
+      }
+    });
 
-  // @ts-ignore
-  post.Comments = formattedComments;
+    const formattedComments = [];
+    // @ts-ignore
+    post.Comments.forEach((comment) => {
+      if (!comment.parentId) {
+        // @ts-ignore
+        formattedComments.push(commentsById[comment.id]);
+      }
+    });
+
+    // @ts-ignore
+    formattedComments.sort((a: any, b: any) => {
+      return Date.parse(b?.createdAt) - Date.parse(a?.createdAt);
+    });
+
+    // @ts-ignore
+    post.Comments = formattedComments;
+  });
 
   res.json(post);
 });
