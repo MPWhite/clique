@@ -99,7 +99,7 @@ export function PostFeed() {
       <>
         <div className="NavButton">
           <Link to={"/submit-post"}>
-            <button>Post Something</button>
+            <button>Post</button>
           </Link>
           <Link to={"/login"}>
             <button>Login</button>
