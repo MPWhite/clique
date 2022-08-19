@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import { Field, Formik } from "formik";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 
 TimeAgo.addDefaultLocale(en);
 
@@ -36,13 +36,12 @@ export function Comment({ comment }: { comment: any }) {
   );
 }
 
-const TOKEN =
-  "eyJhbGciOiJIUzI1NiJ9.N2NlNjFhZTMtMmY3Mi00MDgwLWIxNDUtMWY0MGVhN2FiZGIz.lrk6fs9aH13PEBS_n4rRyKziAH4Sdj7YbRDg-ChTPJ8";
-
 export function Post() {
   const params = useParams();
 
   const [postWithComments, setPostWithComments] = useState(null);
+  const navigate = useNavigate();
+  const authToken = localStorage.getItem("AUTH");
 
   const openLink = () => {
     // @ts-ignore
@@ -50,9 +49,13 @@ export function Post() {
   };
 
   const fetchComments = () => {
+    if (!authToken) {
+      navigate("/login");
+      return;
+    }
     fetch(`/api/posts/${params.postId}`, {
       headers: {
-        Authorization: TOKEN,
+        Authorization: authToken,
       },
     })
       .then((response) => response.json())
@@ -93,6 +96,10 @@ export function Post() {
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           setSubmitting(true);
+          if (!authToken) {
+            navigate("/login");
+            return;
+          }
           const commentBody = {
             // @ts-ignore
             serverId: postWithComments?.serverId,
@@ -102,7 +109,7 @@ export function Post() {
           await fetch(`/api/posts/${params.postId}/comment`, {
             method: "POST",
             headers: {
-              Authorization: TOKEN,
+              Authorization: authToken,
               "Content-Type": "application/json",
             },
             // @ts-ignore

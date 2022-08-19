@@ -36,7 +36,7 @@ export function CommentReply() {
   }, []);
 
   if (!postWithSingleComment) {
-    return <h1>Eh?</h1>;
+    return <h1>Loading</h1>;
   }
 
   const { post, comment } = postWithSingleComment;
