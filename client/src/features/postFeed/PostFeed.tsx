@@ -3,6 +3,7 @@ import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import { Link } from "react-router-dom";
 import PullToRefresh from "react-simple-pull-to-refresh";
+import { useNavigate } from "react-router-dom";
 
 TimeAgo.addDefaultLocale(en);
 
@@ -40,13 +41,18 @@ export function DummyPost({ rank, post }: { rank: Number; post: any }) {
 }
 
 export function PostFeed() {
-  localStorage.setItem(
-    "AUTH",
-    "eyJhbGciOiJIUzI1NiJ9.N2NlNjFhZTMtMmY3Mi00MDgwLWIxNDUtMWY0MGVhN2FiZGIz.lrk6fs9aH13PEBS_n4rRyKziAH4Sdj7YbRDg-ChTPJ8"
-  );
+  const navigate = useNavigate();
+
   const [posts, setPosts] = useState([]);
+  const authToken = localStorage.getItem("AUTH");
 
   const fetchPosts = async () => {
+    const authToken = localStorage.getItem("AUTH");
+    if (!authToken) {
+      navigate("/login");
+      return;
+    }
+
     fetch("/api/posts", {
       // @ts-ignore
       headers: {
@@ -63,6 +69,10 @@ export function PostFeed() {
   };
 
   useEffect(() => {
+    if (!authToken) {
+      navigate("/login");
+      return;
+    }
     fetch("/api/posts", {
       // @ts-ignore
       headers: {
@@ -94,6 +104,14 @@ export function PostFeed() {
           <Link to={"/login"}>
             <button>Login</button>
           </Link>
+          <button
+            onClick={() => {
+              localStorage.removeItem("AUTH");
+              navigate("/login");
+            }}
+          >
+            Logout
+          </button>
         </div>
         {posts.map((post, idx) => {
           return <DummyPost rank={idx + 1} key={idx} post={post} />;

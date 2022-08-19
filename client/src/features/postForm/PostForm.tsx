@@ -1,7 +1,10 @@
 import "./PostForm.scss";
 import { Formik } from "formik";
+import { useNavigate } from "react-router-dom";
 
 export function PostForm() {
+  const navigate = useNavigate();
+
   return (
     <div className="PostForm">
       <h1>Create a Post</h1>
@@ -19,7 +22,34 @@ export function PostForm() {
         }}
         onSubmit={(values, { setSubmitting }) => {
           setTimeout(() => {
-            alert(JSON.stringify(values, null, 2));
+            const authToken = localStorage.getItem("AUTH");
+            if (!authToken) {
+              navigate("/login");
+              return;
+            }
+            const postReq = {
+              // TODO
+              serverId: "9f3f6848-4401-4660-b764-452ac4e3624b",
+              // @ts-ignore
+              link: values.link,
+              title: values.title,
+            };
+            fetch("/api/posts", {
+              method: "POST",
+              headers: {
+                Authorization: authToken,
+                "Content-type": "application/json",
+              },
+              body: JSON.stringify(postReq),
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                navigate("/");
+              })
+              .catch((err) => {
+                alert(err);
+              });
+
             setSubmitting(false);
           }, 400);
         }}

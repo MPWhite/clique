@@ -9,18 +9,20 @@ TimeAgo.addDefaultLocale(en);
 // Create formatter (English).
 const timeAgo = new TimeAgo("en-US");
 
-const TOKEN =
-  "eyJhbGciOiJIUzI1NiJ9.N2NlNjFhZTMtMmY3Mi00MDgwLWIxNDUtMWY0MGVhN2FiZGIz.lrk6fs9aH13PEBS_n4rRyKziAH4Sdj7YbRDg-ChTPJ8";
-
 export function CommentReply() {
   const { postId, commentId } = useParams();
   const [postWithSingleComment, setPostWithSingleComment] = useState(null);
   const navigate = useNavigate();
+  const authToken = localStorage.getItem("AUTH");
 
   useEffect(() => {
+    if (!authToken) {
+      navigate("/login");
+      return;
+    }
     fetch(`/api/posts/${postId}/comment/${commentId}`, {
       headers: {
-        Authorization: TOKEN,
+        Authorization: authToken,
       },
     })
       .then((response) => response.json())
@@ -43,6 +45,11 @@ export function CommentReply() {
     // @ts-ignore
     window.open(post.link);
   };
+
+  if (!authToken) {
+    navigate("/login");
+    return <></>;
+  }
 
   return (
     <div>
@@ -97,7 +104,7 @@ export function CommentReply() {
           await fetch(`/api/posts/${postId}/comment`, {
             method: "POST",
             headers: {
-              Authorization: TOKEN,
+              Authorization: authToken,
               "Content-Type": "application/json",
             },
             // @ts-ignore

@@ -1,13 +1,39 @@
 import { Field, Formik } from "formik";
 import "./LoginForm.scss";
+import { useNavigate } from "react-router-dom";
 
 export function Login() {
+  const navigate = useNavigate();
+
   return (
     <>
       <h1>Login</h1>
       <Formik
         initialValues={{ username: "", password: "" }}
-        onSubmit={() => {}}
+        onSubmit={(values, { setSubmitting }) => {
+          setSubmitting(true);
+          const loginReq = {
+            username: values.username,
+            password: values.password,
+          };
+          console.log(JSON.stringify(loginReq));
+          fetch("/api/auth/login", {
+            method: "POST",
+            headers: { "Content-type": "application/json" },
+            body: JSON.stringify(loginReq),
+          })
+            .then((resp) => resp.json())
+            .then((data) => {
+              console.log(data);
+              const { authToken } = data;
+              if (!authToken) {
+                throw Error("Auth token not in response");
+              }
+              localStorage.setItem("AUTH", authToken);
+              navigate("/");
+            });
+          setSubmitting(false);
+        }}
         validate={(values) => {
           if (values.username.length > 1 && values.password.length > 1) {
             return [];
@@ -22,6 +48,7 @@ export function Login() {
           handleSubmit,
           handleChange,
           handleBlur,
+          isSubmitting,
         }) => {
           return (
             <form onSubmit={handleSubmit} className="LoginForm">
@@ -40,11 +67,7 @@ export function Login() {
                 onBlur={handleBlur}
                 placeholder="password"
               ></input>
-              <button
-                disabled={!isValid || !touched.password || !touched.username}
-              >
-                Login
-              </button>
+              <button disabled={isSubmitting || !isValid}>Login</button>
             </form>
           );
         }}

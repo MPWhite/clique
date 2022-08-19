@@ -1,6 +1,7 @@
 import express from "express";
 import { getPrisma } from "./db";
 import tracer from "../tracer";
+import { logger } from "./util/logging";
 
 const postRoutes = express.Router();
 
@@ -16,7 +17,6 @@ const postRoutes = express.Router();
 postRoutes.post("/", async (req, res) => {
   const post: {
     serverId: string;
-    authorId: string;
     link: string;
     title: string;
   } = req.body;
@@ -24,7 +24,8 @@ postRoutes.post("/", async (req, res) => {
   await db.post.create({
     data: {
       serverId: post.serverId,
-      authorId: post.authorId,
+      // @ts-ignore
+      authorId: req.userId,
       link: post.link,
       title: post.title,
     },
@@ -37,6 +38,7 @@ postRoutes.post("/:postId/comment", async (req, res) => {
   const prisma = getPrisma();
   const { parentCommentId, body } = req.body;
   const bodyOrDefault = body;
+  // @ts-ignore
 
   const post = await prisma.post.findFirst({
     where: { id: req.params["postId"] },
@@ -63,7 +65,7 @@ postRoutes.post("/:postId/comment", async (req, res) => {
       // @ts-ignore
       body: bodyOrDefault,
       // @ts-ignore
-      authorId: req.user,
+      authorId: req.userId,
       postId: req.params["postId"],
       parentId: parentCommentId,
     },
@@ -113,7 +115,6 @@ postRoutes.get("/:postId", async (req, res) => {
     // @ts-ignore
     post.Comments.forEach((comment) => {
       if (comment.parentId) {
-        console.log(commentsById[comment.parentId]);
         commentsById[comment.parentId].children.push(comment);
       }
     });

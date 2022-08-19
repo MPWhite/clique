@@ -16,10 +16,7 @@ type LoginRequest = {
 
 authRoutes.post(
   "/login",
-  [
-    body("username").exists().isLength({ min: 0, max: 100 }),
-    body("password").exists().isLength({ min: 3, max: 100 }),
-  ],
+  [body("username").exists(), body("password").exists()],
   async (req: TypedRequest<LoginRequest>, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
