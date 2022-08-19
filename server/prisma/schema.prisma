@@ -41,6 +41,7 @@ model User {
   Post               Post[]
   Comment            Comment[]
   CreatedInvitations Invitation[]       @relation("InviteCreator")
+  Approval           Approval[]
 }
 
 model ServerMembership {
@@ -85,6 +86,7 @@ enum InvitationStatus {
   PENDING
   ACCEPTED
   REJECTED
+  USED
 }
 
 // How the fuck do i link this to a user that has not been made yet?
@@ -110,6 +112,7 @@ model Approval {
   invitationId String     @db.Uuid
   server       Server     @relation(fields: [serverId], references: [id])
   serverId     String     @db.Uuid
-
-  createdAt DateTime @default(now())
+  approver     User       @relation(fields: [approverId], references: [id])
+  approverId   String     @db.Uuid
+  createdAt    DateTime   @default(now())
 }

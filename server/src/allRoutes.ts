@@ -35,8 +35,13 @@ allRoutes.get("/users", async (req, res) => {
 
 const { validate } = new Validator({});
 
-interface TypedRequest<T> extends express.Request {
+export interface TypedRequest<T> extends express.Request {
   body: T;
+}
+
+export interface AuthedRequest<T> extends express.Request {
+  body: T;
+  userId?: string;
 }
 
 interface TypedResponse<T> extends express.Response {}

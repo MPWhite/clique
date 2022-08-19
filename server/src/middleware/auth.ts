@@ -9,7 +9,7 @@ export const verifyToken = (req, res, next) => {
     return res.status(403).send("Authorization token missing");
   }
   try {
-    req.user = jwt.verify(token, "REPLACE_ME");
+    req.userId = jwt.verify(token, "REPLACE_ME");
   } catch (err) {
     return res.status(401).send("Invalid token");
   }

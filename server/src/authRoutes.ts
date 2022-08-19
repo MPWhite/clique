@@ -1,16 +1,32 @@
-import express from "express";
+import express, { Request } from "express";
+require("express-async-errors");
 import { getPrisma } from "./db";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
+import { TypedRequest } from "./allRoutes";
+import { body, validationResult } from "express-validator";
+import { logger } from "./util/logging";
 
 const authRoutes = express.Router();
 
-authRoutes.post("/login", async (req, res) => {
-  try {
+type LoginRequest = {
+  username: string;
+  password: string;
+};
+
+authRoutes.post(
+  "/login",
+  [
+    body("username").exists().isLength({ min: 0, max: 100 }),
+    body("password").exists().isLength({ min: 3, max: 100 }),
+  ],
+  async (req: TypedRequest<LoginRequest>, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json(errors).send();
+    }
     const { username, password } = req.body;
-
     const prisma = getPrisma();
-
     const user = await prisma.user.findFirst({
       where: {
         displayName: username,
@@ -18,14 +34,13 @@ authRoutes.post("/login", async (req, res) => {
     });
 
     if (!user) {
-      res.status(404).send();
+      res.status(404).json("User not found");
       return;
     }
 
-    // @ts-ignore
     const passwordMatch = bcrypt.compareSync(password, user.password);
     if (!passwordMatch) {
-      res.status(404).send();
+      res.status(401).json("Bad password").send();
       return;
     }
 
@@ -34,40 +49,67 @@ authRoutes.post("/login", async (req, res) => {
     res.json({
       authToken,
     });
-  } catch (ex) {
-    console.error(ex);
-    res.json("No good, sorry");
   }
-});
+);
 
-authRoutes.post("/register", async (req, res) => {
-  const { username, password, inviteToken } = req.body;
-  const prisma = getPrisma();
+// TODO this needs to be a transaction
+authRoutes.post(
+  "/register",
+  [
+    body("serverId").exists(),
+    body("username").exists(),
+    body("password").exists(),
+    body("inviteId").exists(),
+  ],
+  async (req, res) => {
+    // Request validation
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.status(400).json(errors).send();
+    }
+    // Start the actual request handler
+    const { username, password, inviteId } = req.body;
+    const prisma = getPrisma();
 
-  const user = await prisma.user.findFirst({
-    where: {
-      displayName: username,
-    },
-  });
+    const invitation = await prisma.invitation.findFirst({
+      where: {
+        id: inviteId,
+      },
+    });
 
-  if (user) {
-    res.json("No!");
+    if (!invitation) {
+      res.status(404).json("Invitation not found").send();
+      return;
+    }
+    if (invitation.status != "ACCEPTED") {
+      res.status(400).json("Invitation not accepted").send();
+      return;
+    }
+
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const insertedUser = await prisma.user.create({
+      data: {
+        displayName: username,
+        password: hashedPassword,
+        invitationId: inviteId,
+      },
+    });
+
+    await prisma.invitation.update({
+      where: {
+        id: inviteId,
+      },
+      data: {
+        // @ts-ignore
+        status: "USED",
+      },
+    });
+
+    const authToken = jwt.sign(insertedUser.id, "REPLACE_ME");
+    res.json({
+      authToken,
+    });
   }
-
-  const hashedPassword = bcrypt.hashSync(password, 10);
-
-  const insertedUser = await prisma.user.create({
-    data: {
-      displayName: username,
-      password: hashedPassword,
-    },
-  });
-
-  const authToken = jwt.sign(insertedUser.id, "REPLACE_ME");
-
-  res.json({
-    authToken,
-  });
-});
+);
 
 export default authRoutes;

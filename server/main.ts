@@ -1,5 +1,5 @@
 import "./tracer";
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import { logger } from "./src/util/logging";
 import { allRoutes } from "./src/allRoutes";
 import bodyParser from "body-parser";
@@ -11,7 +11,6 @@ import { verifyToken } from "./src/middleware/auth";
 import connectDatadog from "connect-datadog";
 
 const app = express();
-
 console.log("Setting up request logging");
 app.use(
   bunyanMiddleware({
@@ -35,11 +34,6 @@ app.use("/api", allRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/posts", verifyToken, postRoutes);
 app.use("/api/invitation", verifyToken, inviteRoutes);
-
-app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Something broke!");
-});
 
 console.log(`Listening on port ${process.env.PORT || 3001}`);
 app.listen(process.env.PORT || 3001);

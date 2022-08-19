@@ -3,6 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+require("./tracer");
 const express_1 = __importDefault(require("express"));
 const logging_1 = require("./src/util/logging");
 const allRoutes_1 = require("./src/allRoutes");
@@ -32,9 +33,5 @@ app.use("/api", allRoutes_1.allRoutes);
 app.use("/api/auth", authRoutes_1.default);
 app.use("/api/posts", auth_1.verifyToken, postRoutes_1.default);
 app.use("/api/invitation", auth_1.verifyToken, inviteRoutes_1.default);
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send("Something broke!");
-});
 console.log(`Listening on port ${process.env.PORT || 3001}`);
 app.listen(process.env.PORT || 3001);

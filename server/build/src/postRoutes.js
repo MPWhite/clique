@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const db_1 = require("./db");
+const tracer_1 = __importDefault(require("../tracer"));
 const postRoutes = express_1.default.Router();
 // id
 // serverId
@@ -82,47 +83,52 @@ postRoutes.get("/", (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 }));
 postRoutes.get("/:postId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const prisma = (0, db_1.getPrisma)();
-    const post = yield prisma.post.findFirst({
-        where: { id: req.params["postId"] },
-        include: {
-            author: true,
-            // @ts-ignore
-            Comments: {
-                include: {
-                    author: true,
+    let post;
+    yield tracer_1.default.trace("fetchPosts.db", (span) => __awaiter(void 0, void 0, void 0, function* () {
+        post = yield prisma.post.findFirst({
+            where: { id: req.params["postId"] },
+            include: {
+                author: true,
+                // @ts-ignore
+                Comments: {
+                    include: {
+                        author: true,
+                    },
                 },
             },
-        },
-        orderBy: { createdAt: "desc" },
-    });
-    const commentsById = {};
-    // @ts-ignore
-    post.Comments.forEach((comment) => {
+            orderBy: { createdAt: "desc" },
+        });
+    }));
+    tracer_1.default.trace("fetchPosts.assembleComments", (span) => {
+        const commentsById = {};
         // @ts-ignore
-        comment.children = [];
-        commentsById[comment.id] = comment;
-    });
-    // @ts-ignore
-    post.Comments.forEach((comment) => {
-        if (comment.parentId) {
-            console.log(commentsById[comment.parentId]);
-            commentsById[comment.parentId].children.push(comment);
-        }
-    });
-    const formattedComments = [];
-    // @ts-ignore
-    post.Comments.forEach((comment) => {
-        if (!comment.parentId) {
+        post.Comments.forEach((comment) => {
             // @ts-ignore
-            formattedComments.push(commentsById[comment.id]);
-        }
+            comment.children = [];
+            commentsById[comment.id] = comment;
+        });
+        // @ts-ignore
+        post.Comments.forEach((comment) => {
+            if (comment.parentId) {
+                console.log(commentsById[comment.parentId]);
+                commentsById[comment.parentId].children.push(comment);
+            }
+        });
+        const formattedComments = [];
+        // @ts-ignore
+        post.Comments.forEach((comment) => {
+            if (!comment.parentId) {
+                // @ts-ignore
+                formattedComments.push(commentsById[comment.id]);
+            }
+        });
+        // @ts-ignore
+        formattedComments.sort((a, b) => {
+            return Date.parse(b === null || b === void 0 ? void 0 : b.createdAt) - Date.parse(a === null || a === void 0 ? void 0 : a.createdAt);
+        });
+        // @ts-ignore
+        post.Comments = formattedComments;
     });
-    // @ts-ignore
-    formattedComments.sort((a, b) => {
-        return Date.parse(b === null || b === void 0 ? void 0 : b.createdAt) - Date.parse(a === null || a === void 0 ? void 0 : a.createdAt);
-    });
-    // @ts-ignore
-    post.Comments = formattedComments;
     res.json(post);
 }));
 postRoutes.get("/:postId/comment/:commentId", (req, res) => __awaiter(void 0, void 0, void 0, function* () {

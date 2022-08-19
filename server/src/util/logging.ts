@@ -1,7 +1,7 @@
-import {createLogger} from "bunyan";
+import { createLogger } from "bunyan";
 
 const logger = createLogger({
-    name: "Some Name"
-})
+  name: "clique",
+});
 
-export {logger};
+export { logger };
