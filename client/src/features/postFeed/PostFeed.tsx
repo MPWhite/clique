@@ -36,7 +36,6 @@ export function DummyPost({ rank, post }: { rank: Number; post: any }) {
 
   // @ts-ignore
   const domain = get(extractHostname(post.link));
-  console.log("FINDME", domain);
 
   return (
     <div className="PostCard" onClick={openLink}>
@@ -48,7 +47,6 @@ export function DummyPost({ rank, post }: { rank: Number; post: any }) {
           <p>{post.title}</p>
           {domain && <span>{domain.toString()}</span>}
         </div>
-        {domain && <span>{domain.toString()}</span>}
         <span>{timeAgo.format(Date.parse(post.createdAt))}</span>
         <span>{post.author.displayName}</span>
         <span

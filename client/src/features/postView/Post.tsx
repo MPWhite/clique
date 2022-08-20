@@ -5,6 +5,25 @@ import TimeAgo from "javascript-time-ago";
 import en from "javascript-time-ago/locale/en.json";
 import { Field, Formik } from "formik";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { get } from "psl";
+
+function extractHostname(url: string) {
+  var hostname;
+  //find & remove protocol (http, ftp, etc.) and get hostname
+
+  if (url.indexOf("//") > -1) {
+    hostname = url.split("/")[2];
+  } else {
+    hostname = url.split("/")[0];
+  }
+
+  //find & remove port number
+  hostname = hostname.split(":")[0];
+  //find & remove "?"
+  hostname = hostname.split("?")[0];
+
+  return hostname;
+}
 
 TimeAgo.addDefaultLocale(en);
 
@@ -72,12 +91,22 @@ export function Post() {
     fetchComments();
   }, []);
 
+  let domain;
+  // @ts-ignore
+  if (postWithComments?.link) {
+    // @ts-ignore
+    domain = get(extractHostname(postWithComments.link));
+  }
+
   return (
     <div className="Post">
       <div className="PostCard" onClick={openLink}>
         <div className="PostCard__Details">
-          {/*@ts-ignore*/}
-          <p>{postWithComments?.title}</p>
+          <div>
+            {/*@ts-ignore*/}
+            <p>{postWithComments?.title}</p>
+            {domain && <span>{domain.toString()}</span>}
+          </div>
           <span>
             {/*@ts-ignore*/}
             {postWithComments?.createdAt &&
