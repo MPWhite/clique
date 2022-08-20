@@ -16,6 +16,7 @@
     "formik": "^2.2.9",
     "http-proxy-middleware": "^2.0.6",
     "javascript-time-ago": "^2.5.7",
+    "psl": "^1.9.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.2",
@@ -53,6 +54,7 @@
   },
   "devDependencies": {
     "@types/http-proxy-middleware": "^1.0.0",
+    "@types/psl": "^1.1.0",
     "ts-json-schema-generator": "^1.0.0"
   }
 }

@@ -4,8 +4,27 @@ import en from "javascript-time-ago/locale/en.json";
 import { Link } from "react-router-dom";
 import PullToRefresh from "react-simple-pull-to-refresh";
 import { useNavigate } from "react-router-dom";
+import { get } from "psl";
 
 TimeAgo.addDefaultLocale(en);
+
+function extractHostname(url: string) {
+  var hostname;
+  //find & remove protocol (http, ftp, etc.) and get hostname
+
+  if (url.indexOf("//") > -1) {
+    hostname = url.split("/")[2];
+  } else {
+    hostname = url.split("/")[0];
+  }
+
+  //find & remove port number
+  hostname = hostname.split(":")[0];
+  //find & remove "?"
+  hostname = hostname.split("?")[0];
+
+  return hostname;
+}
 
 // Create formatter (English).
 const timeAgo = new TimeAgo("en-US");
@@ -15,13 +34,21 @@ export function DummyPost({ rank, post }: { rank: Number; post: any }) {
     window.open(post.link);
   };
 
+  // @ts-ignore
+  const domain = get(extractHostname(post.link));
+  console.log("FINDME", domain);
+
   return (
     <div className="PostCard" onClick={openLink}>
       <div className="PostCard__Score">
         <span>{rank.toString()}</span>
       </div>
       <div className="PostCard__Details">
-        <p>{post.title}</p>
+        <div>
+          <p>{post.title}</p>
+          {domain && <span>{domain.toString()}</span>}
+        </div>
+        {domain && <span>{domain.toString()}</span>}
         <span>{timeAgo.format(Date.parse(post.createdAt))}</span>
         <span>{post.author.displayName}</span>
         <span
