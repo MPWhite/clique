@@ -2,6 +2,36 @@
   display: flex;
   flex-direction: column;
 
+  &__Limits{
+    display: flex;
+    flex-direction: column;
+
+    .Limit {
+      border-bottom: solid 1px #ccc;
+      display: flex;
+      line-height: 30px;
+
+      :last-child {
+        border: none;
+      }
+
+      &__Label {
+        width: 180px;
+        border-right: solid 1px #ccc;
+      }
+
+      span {
+        margin-left: 10px;
+        font-weight: bold;
+      }
+
+    }
+    :last-child {
+      border: none;
+    }
+
+  }
+
   h1 {
     margin: 0 0 10px 0;
   }
@@ -16,11 +46,12 @@
   }
 }
 
-.PendingInvite {
+.Invite {
   display: flex;
   flex-direction: column;
   background-color: #eee;
-  padding: 10px;
+  padding: 15px;
+  margin-bottom: 10px;
 
   div {
     margin-bottom: 3px;
@@ -55,6 +86,27 @@
     box-sizing: border-box;
     height: 22px;
     margin-top: 5px;
+    button {
+      height: 30px;
+      width: 40%;
+      box-sizing: border-box;
+    }
   }
 
+  &__RegistrationLink {
+    margin-top: 4px;
+    span {
+      margin-right: 6px;
+    }
+  }
+}
+
+.SlightBold {
+  font-weight: 500;
+}
+
+.NonLinkUrl {
+  background-color: #ccc;
+  padding: 3px;
+  border: solid 1px #bbb;
 }

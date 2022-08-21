@@ -30,7 +30,8 @@ postRoutes.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* (
     yield db.post.create({
         data: {
             serverId: post.serverId,
-            authorId: post.authorId,
+            // @ts-ignore
+            authorId: req.userId,
             link: post.link,
             title: post.title,
         },
@@ -41,6 +42,7 @@ postRoutes.post("/:postId/comment", (req, res) => __awaiter(void 0, void 0, void
     const prisma = (0, db_1.getPrisma)();
     const { parentCommentId, body } = req.body;
     const bodyOrDefault = body;
+    // @ts-ignore
     const post = yield prisma.post.findFirst({
         where: { id: req.params["postId"] },
         select: {
@@ -65,7 +67,7 @@ postRoutes.post("/:postId/comment", (req, res) => __awaiter(void 0, void 0, void
             // @ts-ignore
             body: bodyOrDefault,
             // @ts-ignore
-            authorId: req.user,
+            authorId: req.userId,
             postId: req.params["postId"],
             parentId: parentCommentId,
         },
@@ -110,7 +112,6 @@ postRoutes.get("/:postId", (req, res) => __awaiter(void 0, void 0, void 0, funct
         // @ts-ignore
         post.Comments.forEach((comment) => {
             if (comment.parentId) {
-                console.log(commentsById[comment.parentId]);
                 commentsById[comment.parentId].children.push(comment);
             }
         });
