@@ -140,7 +140,7 @@ export function InviteList() {
             <span>2</span>
           </div>
           <div className="Limit">
-            <div className="Limit__Label">Quota resets in:</div>
+            <div className="Limit__Label">Limit resets in:</div>
             <span>4 days</span>
           </div>
         </div>
@@ -155,6 +155,7 @@ export function InviteList() {
         {inviteList.map((invite) => (
           <ProposedInvite invite={invite} />
         ))}
+        <button className="InviteButton">Propose Invitation</button>
         {/*TODO -- figure out how to name this*/}
         <h2>Approved Invites</h2>
         {/* TODO Write this copy */}
