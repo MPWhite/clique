@@ -13,27 +13,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+require("express-async-errors");
 const db_1 = require("./db");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const express_validator_1 = require("express-validator");
-const logging_1 = require("./util/logging");
 const authRoutes = express_1.default.Router();
-const loginValidators = [
-    (0, express_validator_1.body)("username").exists().isLength({ min: 0, max: 100 }),
-    (0, express_validator_1.body)("password").exists().isLength({ min: 3, max: 100 }),
-];
-// const loginValidator = (req, res, next) => {
-//   body("username").exists().isLength({ min: 0, max: 100 });
-//   const errors = validationResult(req);
-//   if (!errors.isEmpty()) {
-//     res.error(errors);
-//   } else {
-//     next();
-//   }
-// };
-//
-authRoutes.post("/login", loginValidators, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+authRoutes.post("/login", [(0, express_validator_1.body)("username").exists(), (0, express_validator_1.body)("password").exists()], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const errors = (0, express_validator_1.validationResult)(req);
     if (!errors.isEmpty()) {
         res.status(400).json(errors).send();
@@ -45,15 +31,13 @@ authRoutes.post("/login", loginValidators, (req, res) => __awaiter(void 0, void 
             displayName: username,
         },
     });
-    logging_1.logger.info(user === null || user === void 0 ? void 0 : user.id);
     if (!user) {
-        res.status(404).send();
+        res.status(404).json("User not found");
         return;
     }
-    // @ts-ignore
     const passwordMatch = bcrypt_1.default.compareSync(password, user.password);
     if (!passwordMatch) {
-        res.status(404).send();
+        res.status(401).json("Bad password").send();
         return;
     }
     const authToken = jsonwebtoken_1.default.sign(user.id, "REPLACE_ME");
@@ -61,22 +45,49 @@ authRoutes.post("/login", loginValidators, (req, res) => __awaiter(void 0, void 
         authToken,
     });
 }));
-authRoutes.post("/register", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, password, inviteToken } = req.body;
+// TODO this needs to be a transaction
+authRoutes.post("/register", [
+    (0, express_validator_1.body)("serverId").exists(),
+    (0, express_validator_1.body)("username").exists(),
+    (0, express_validator_1.body)("password").exists(),
+    (0, express_validator_1.body)("inviteId").exists(),
+], (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Request validation
+    const errors = (0, express_validator_1.validationResult)(req);
+    if (!errors.isEmpty()) {
+        res.status(400).json(errors).send();
+    }
+    // Start the actual request handler
+    const { username, password, inviteId } = req.body;
     const prisma = (0, db_1.getPrisma)();
-    const user = yield prisma.user.findFirst({
+    const invitation = yield prisma.invitation.findFirst({
         where: {
-            displayName: username,
+            id: inviteId,
         },
     });
-    if (user) {
-        res.json("No!");
+    if (!invitation) {
+        res.status(404).json("Invitation not found").send();
+        return;
+    }
+    if (invitation.status != "ACCEPTED") {
+        res.status(400).json("Invitation not accepted").send();
+        return;
     }
     const hashedPassword = bcrypt_1.default.hashSync(password, 10);
     const insertedUser = yield prisma.user.create({
         data: {
             displayName: username,
             password: hashedPassword,
+            invitationId: inviteId,
+        },
+    });
+    yield prisma.invitation.update({
+        where: {
+            id: inviteId,
+        },
+        data: {
+            // @ts-ignore
+            status: "USED",
         },
     });
     const authToken = jsonwebtoken_1.default.sign(insertedUser.id, "REPLACE_ME");

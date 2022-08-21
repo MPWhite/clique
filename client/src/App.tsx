@@ -8,6 +8,7 @@ import { Post } from "./features/postView/Post";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { CommentReply } from "./features/postView/CommentReply";
 import { Login } from "./features/auth/Login";
+import { InviteList } from "./features/invitations/InviteList";
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           element={<CommentReply />}
         />
         <Route path={"/submit-post"} element={<PostForm />} />
+        <Route path={"/invites"} element={<InviteList />} />
       </Routes>
     </BrowserRouter>
   );

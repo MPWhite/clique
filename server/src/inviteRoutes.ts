@@ -104,6 +104,13 @@ inviteRoutes.get("/", async (req: Request, res: Response) => {
     where: {
       status: "PENDING",
     },
+    include: {
+      creator: {
+        select: {
+          displayName: true,
+        },
+      },
+    },
   });
 
   res.json(invites);

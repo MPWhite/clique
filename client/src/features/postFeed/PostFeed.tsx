@@ -8,7 +8,7 @@ import { get } from "psl";
 
 TimeAgo.addDefaultLocale(en);
 
-function extractHostname(url: string) {
+export function extractHostname(url: string) {
   var hostname;
   //find & remove protocol (http, ftp, etc.) and get hostname
 
@@ -126,10 +126,11 @@ export function PostFeed() {
           <Link to={"/submit-post"}>
             <button>Post</button>
           </Link>
-          <Link to={"/login"}>
-            <button>Login</button>
+          <Link to={"/invites"}>
+            <button>Invites</button>
           </Link>
           <button
+            className="NavButton__Logout"
             onClick={() => {
               localStorage.removeItem("AUTH");
               navigate("/login");
