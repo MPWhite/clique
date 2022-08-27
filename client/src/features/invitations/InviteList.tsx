@@ -63,7 +63,7 @@ const approvedInviteList = [
   },
 ];
 
-function ApprovedInvite({ invite }: { invite: any }) {
+function ApprovedInvite({ invite }: any) {
   return (
     <div className="Invite">
       {/*Name*/}
@@ -84,7 +84,7 @@ function ApprovedInvite({ invite }: { invite: any }) {
   );
 }
 
-function ProposedInvite({ invite }: { invite: any }) {
+function ProposedInvite({ invite, approveInvite }: any) {
   const domain = get(extractHostname(invite.socialProofLink));
 
   return (
@@ -106,7 +106,13 @@ function ProposedInvite({ invite }: { invite: any }) {
       </div>
       {/*Actions*/}
       <div className="InviteActions">
-        <button>Approve</button>
+        <button
+          onClick={() => {
+            approveInvite(invite.id);
+          }}
+        >
+          Approve
+        </button>
       </div>
     </div>
   );
@@ -135,6 +141,22 @@ export function InviteList() {
         alert("Oh no!");
         console.log(err.message);
       });
+  };
+
+  const approveInvite = (inviteId: string) => {
+    if (!authToken) {
+      navigate("/login");
+    }
+    fetch(`/api/invitation/${inviteId}/approve`, {
+      method: "POST",
+      // @ts-ignore
+      headers: {
+        Authorization: authToken,
+      },
+    }).catch((err) => {
+      alert("Oh no!");
+      console.log(err.message);
+    });
   };
 
   useEffect(() => {
@@ -179,9 +201,9 @@ export function InviteList() {
           register an account in this clique.
         </p>
         {invites.map((invite) => (
-          <ProposedInvite invite={invite} />
+          <ProposedInvite invite={invite} approveInvite={approveInvite} />
         ))}
-        <button className="InviteButton">Propose Invitation</button>
+        {/*<button className="InviteButton">Propose Invitation</button>*/}
         {/*TODO -- figure out how to name this*/}
         <h2>Approved Invites</h2>
         {/* TODO Write this copy */}
@@ -190,7 +212,7 @@ export function InviteList() {
           yet been redeemed. Please send them the registration link.
         </p>
         {inviteList.map((invite) => (
-          <ApprovedInvite invite={invite} />
+          <ApprovedInvite invite={invite} approveInvite={approveInvite} />
         ))}
       </div>
     </>
