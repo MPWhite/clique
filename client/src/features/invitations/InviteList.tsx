@@ -1,8 +1,9 @@
 import "./InviteList.scss";
 import { get } from "psl";
 import { extractHostname } from "../postFeed/PostFeed";
-import { Link } from "react-router-dom";
-import React from "react";
+import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { initMetric } from "web-vitals/dist/modules/lib/initMetric";
 
 const inviteList = [
   {
@@ -62,8 +63,6 @@ const approvedInviteList = [
   },
 ];
 
-const fakeApiResponse = {};
-
 function ApprovedInvite({ invite }: { invite: any }) {
   return (
     <div className="Invite">
@@ -92,7 +91,9 @@ function ProposedInvite({ invite }: { invite: any }) {
     <div className="Invite">
       {/*Name*/}
       <div className="Invite__Name">
-        <p>{invite.inviteUserDisplayName}</p>
+        <p>
+          {invite.firstName} {invite.lastName}
+        </p>
       </div>
       {/*Info*/}
       <div className="Invite__Info">
@@ -106,13 +107,42 @@ function ProposedInvite({ invite }: { invite: any }) {
       {/*Actions*/}
       <div className="InviteActions">
         <button>Approve</button>
-        <button>Veto</button>
       </div>
     </div>
   );
 }
 
 export function InviteList() {
+  const [invites, setInvites] = useState([]);
+  const navigate = useNavigate();
+  const authToken = localStorage.getItem("AUTH");
+
+  const fetchInvites = () => {
+    if (!authToken) {
+      navigate("/login");
+    }
+    fetch(`/api/invitation?statusList=PENDING`, {
+      // @ts-ignore
+      headers: {
+        Authorization: authToken,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setInvites(data);
+      })
+      .catch((err) => {
+        alert("Oh no!");
+        console.log(err.message);
+      });
+  };
+
+  useEffect(() => {
+    fetchInvites();
+  }, []);
+
+  console.log(invites);
+
   return (
     <>
       <div className="NavButton">
@@ -136,10 +166,6 @@ export function InviteList() {
             <span>2</span>
           </div>
           <div className="Limit">
-            <div className="Limit__Label">Vetoes remaining:</div>
-            <span>2</span>
-          </div>
-          <div className="Limit">
             <div className="Limit__Label">Limit resets in:</div>
             <span>4 days</span>
           </div>
@@ -152,7 +178,7 @@ export function InviteList() {
           registration link which can be sent to the invited user and used to
           register an account in this clique.
         </p>
-        {inviteList.map((invite) => (
+        {invites.map((invite) => (
           <ProposedInvite invite={invite} />
         ))}
         <button className="InviteButton">Propose Invitation</button>

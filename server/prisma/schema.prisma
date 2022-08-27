@@ -91,19 +91,20 @@ enum InvitationStatus {
 
 // How the fuck do i link this to a user that has not been made yet?
 model Invitation {
-  id                    String           @id @default(uuid()) @db.Uuid
-  server                Server           @relation(fields: [serverId], references: [id])
-  serverId              String           @db.Uuid
-  creator               User             @relation("InviteCreator", fields: [creatorId], references: [id])
-  creatorId             String           @db.Uuid
-  inviteUserDisplayName String           @unique
-  socialProofLink       String
-  code                  String
-  status                InvitationStatus
-  Receiver              User?            @relation("Invite")
+  id              String           @id @default(uuid()) @db.Uuid
+  server          Server           @relation(fields: [serverId], references: [id])
+  serverId        String           @db.Uuid
+  creator         User             @relation("InviteCreator", fields: [creatorId], references: [id])
+  creatorId       String           @db.Uuid
+  firstName       String           @default("REPLACE")
+  lastName        String           @default("ME")
+  socialProofLink String
+  code            String
+  status          InvitationStatus
+  Receiver        User?            @relation("Invite")
   // Prisma shit
-  Approvals             Approval[]
-  createdAt             DateTime         @default(now())
+  Approvals       Approval[]
+  createdAt       DateTime         @default(now())
 }
 
 model Approval {
