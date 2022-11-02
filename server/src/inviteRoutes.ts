@@ -41,7 +41,9 @@ inviteRoutes.post(
       data: {
         serverId,
         creatorId: userId,
-        inviteUserDisplayName: `${firstName}${lastName}`,
+        // @ts-ignore
+        firstName,
+        lastName,
         socialProofLink,
         code,
         status: "PENDING",
@@ -97,12 +99,37 @@ inviteRoutes.post(
   }
 );
 
+type InvitationStatus = "PENDING" | "ACCEPTED" | "REJECTED" | "USED";
+
 inviteRoutes.get("/", async (req: Request, res: Response) => {
   const prisma = getPrisma();
+  const { statusList } = req.query;
+  const statusListOrDefault = statusList || "PENDING";
+  // TODO -- how to make these types work
+  // @ts-ignore
+  const formattedStatusList: Array<InvitationStatus> = statusListOrDefault
+    .toString()
+    .split(",");
+  const validStatusList = ["PENDING", "ACCEPTED", "REJECTED", "USED"];
+  formattedStatusList.forEach((status) => {
+    if (!validStatusList.includes(status)) {
+      res
+        .status(400)
+        .json(
+          `Invalid status list: ${status}. Must be one of ${validStatusList}`
+        )
+        .send();
+      return;
+    }
+  });
+
+  logger.info("AHHH", statusList);
 
   const invites = await prisma.invitation.findMany({
     where: {
-      status: "PENDING",
+      status: {
+        in: formattedStatusList,
+      },
     },
     include: {
       creator: {
@@ -110,10 +137,28 @@ inviteRoutes.get("/", async (req: Request, res: Response) => {
           displayName: true,
         },
       },
+      Approvals: {
+        select: {
+          approver: {
+            select: {
+              displayName: true,
+            },
+          },
+        },
+      },
     },
   });
 
   res.json(invites);
+});
+
+inviteRoutes.get("/limits", (req, res) => {
+  res.json({
+    invitationsRemaining: 0,
+    approvalsRemaining: 0,
+    vetoesRemaining: 0,
+    limitResetTimestamp: 0,
+  });
 });
 
 export default inviteRoutes;
