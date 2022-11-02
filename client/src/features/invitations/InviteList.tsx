@@ -154,11 +154,6 @@ export function InviteList() {
 
   return (
     <>
-      <div className="NavButton">
-        <Link to={"/"}>
-          <button>Feed</button>
-        </Link>
-      </div>
       <div className="InviteList">
         <h1>Invitations</h1>
         <div className="InviteList__Limits">

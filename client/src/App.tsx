@@ -7,20 +7,40 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { CommentReply } from "./features/postView/CommentReply";
 import { Login } from "./features/auth/Login";
 import { InviteList } from "./features/invitations/InviteList";
+import { HeaderNav } from "./features/cliqueDropdown/HeaderNav";
+
+function ComponentWithHeader({ children }: any) {
+  return (
+    <div>
+      <HeaderNav />
+      {children}
+    </div>
+  );
+}
+
+function componentWithHeader(Component: any) {
+  return <ComponentWithHeader>{Component}</ComponentWithHeader>;
+}
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path={"/"} element={<PostFeed />} />
+        <Route path={"/"} element={componentWithHeader(<PostFeed />)} />
         <Route path={"/login"} element={<Login />} />
-        <Route path={"/post/:postId"} element={<Post />} />
+        <Route path={"/post/:postId"} element={componentWithHeader(<Post />)} />
         <Route
           path={"/post/:postId/comment/:commentId"}
-          element={<CommentReply />}
+          element={componentWithHeader(<CommentReply />)}
         />
-        <Route path={"/submit-post"} element={<PostForm />} />
-        <Route path={"/invites"} element={<InviteList />} />
+        <Route
+          path={"/submit-post"}
+          element={componentWithHeader(<PostForm />)}
+        />
+        <Route
+          path={"/invites"}
+          element={componentWithHeader(<InviteList />)}
+        />
       </Routes>
     </BrowserRouter>
   );

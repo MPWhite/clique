@@ -82,9 +82,6 @@ export function CommentReply() {
         </div>
         {/* @ts-ignore*/}
         <span>{comment.body}</span>
-        <a className="Comment__Reply" href="/">
-          Reply
-        </a>
       </div>
 
       <br />

@@ -122,23 +122,6 @@ export function PostFeed() {
       canFetchMore={true}
     >
       <>
-        <div className="NavButton">
-          <Link to={"/submit-post"}>
-            <button>Post</button>
-          </Link>
-          <Link to={"/invites"}>
-            <button>Invites</button>
-          </Link>
-          <button
-            className="NavButton__Logout"
-            onClick={() => {
-              localStorage.removeItem("AUTH");
-              navigate("/login");
-            }}
-          >
-            Logout
-          </button>
-        </div>
         {posts.map((post, idx) => {
           return <DummyPost rank={idx + 1} key={idx} post={post} />;
         })}
