@@ -1,18 +1,34 @@
 import express from "express";
 import { getPrisma } from "./db";
 import tracer from "../tracer";
-import { logger } from "./util/logging";
 
 const postRoutes = express.Router();
 
-// id
-// serverId
-// authorId
-// link
-// title
-// score
-// createdAt
-// updatedAt
+type RouteDefinition = {
+  verb: "get" | "post" | "put" | "delete";
+  path: string;
+  requestType: any;
+  responseType?: any;
+};
+
+type CreatePostRequest = {
+  serverId: string;
+  link: string;
+  title: string;
+};
+type CreatePostResponse = {
+  serverId: string;
+  link: string;
+  title: string;
+};
+
+const PostRoutes: RouteDefinition[] = [
+  {
+    verb: "post",
+    path: "/",
+    requestType: CreatePostRequest,
+    requestType: CreatePostResponse,
+];
 
 postRoutes.post("/", async (req, res) => {
   const post: {
