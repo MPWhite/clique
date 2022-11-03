@@ -1,34 +1,8 @@
-import express from "express";
+import express, { Request, Response } from "express";
 import { getPrisma } from "./db";
 import tracer from "../tracer";
 
 const postRoutes = express.Router();
-
-type RouteDefinition = {
-  verb: "get" | "post" | "put" | "delete";
-  path: string;
-  requestType: any;
-  responseType?: any;
-};
-
-type CreatePostRequest = {
-  serverId: string;
-  link: string;
-  title: string;
-};
-type CreatePostResponse = {
-  serverId: string;
-  link: string;
-  title: string;
-};
-
-const PostRoutes: RouteDefinition[] = [
-  {
-    verb: "post",
-    path: "/",
-    requestType: CreatePostRequest,
-    requestType: CreatePostResponse,
-];
 
 postRoutes.post("/", async (req, res) => {
   const post: {
@@ -40,8 +14,7 @@ postRoutes.post("/", async (req, res) => {
   await db.post.create({
     data: {
       serverId: post.serverId,
-      // @ts-ignore
-      authorId: req.userId,
+      authorId: res.locals.userId,
       link: post.link,
       title: post.title,
     },
@@ -50,11 +23,10 @@ postRoutes.post("/", async (req, res) => {
   res.json(post);
 });
 
-postRoutes.post("/:postId/comment", async (req, res) => {
+postRoutes.post("/:postId/comment", async (req: any, res) => {
   const prisma = getPrisma();
   const { parentCommentId, body } = req.body;
   const bodyOrDefault = body;
-  // @ts-ignore
 
   const post = await prisma.post.findFirst({
     where: { id: req.params["postId"] },
@@ -78,10 +50,8 @@ postRoutes.post("/:postId/comment", async (req, res) => {
   await prisma.comment.create({
     data: {
       serverId: post.serverId,
-      // @ts-ignore
       body: bodyOrDefault,
-      // @ts-ignore
-      authorId: req.userId,
+      authorId: res.locals.userId,
       postId: req.params["postId"],
       parentId: parentCommentId,
     },
@@ -90,7 +60,7 @@ postRoutes.post("/:postId/comment", async (req, res) => {
   res.json({ hello: "world" });
 });
 
-postRoutes.get("/", async (req, res) => {
+postRoutes.get("/", async (req: Request, res: Response) => {
   const prisma = getPrisma();
   const posts = await prisma.post.findMany({
     orderBy: { createdAt: "desc" },

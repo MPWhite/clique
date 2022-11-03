@@ -28,7 +28,7 @@ inviteRoutes.post(
       return;
     }
     const { serverId, firstName, lastName, socialProofLink } = req.body;
-    const userId = req.userId;
+    const userId = res.locals.userId;
     if (!userId) {
       res.status(401).json("No userId found on request").send();
       return;
@@ -74,7 +74,7 @@ inviteRoutes.post(
       data: {
         invitationId: inviteId,
         serverId: serverId,
-        approverId: req.userId,
+        approverId: res.locals.userId,
       },
     });
 

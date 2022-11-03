@@ -12,15 +12,15 @@ import connectDatadog from "connect-datadog";
 
 const app = express();
 console.log("Setting up request logging");
-app.use(
-  bunyanMiddleware({
-    headerName: "X-Request-Id",
-    propertyName: "reqId",
-    logName: "req_id",
-    obscureHeaders: [],
-    logger: logger,
-  })
-);
+// app.use(
+//   bunyanMiddleware({
+//     headerName: "X-Request-Id",
+//     propertyName: "reqId",
+//     logName: "req_id",
+//     obscureHeaders: [],
+//     logger: logger,
+//   })
+// );
 
 const ddOptions = {
   response_code: true,
@@ -28,7 +28,7 @@ const ddOptions = {
 };
 
 app.use(bodyParser.json());
-app.use(connectDatadog(ddOptions));
+// app.use(connectDatadog(ddOptions));
 
 app.use("/api", allRoutes);
 app.use("/api/auth", authRoutes);
